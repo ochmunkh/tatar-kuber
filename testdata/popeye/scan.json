@@ -1,0 +1,35 @@
+{
+  "popeye": {
+    "score": 82,
+    "grade": "B",
+    "sanitizers": [
+      {
+        "sanitizer": "services",
+        "gvr": "v1/services",
+        "issues": {
+          "production/orphan-svc": [
+            { "group": "__root__", "level": 2, "message": "[POP-1102] No pods match service selector" }
+          ]
+        }
+      },
+      {
+        "sanitizer": "configmaps",
+        "gvr": "v1/configmaps",
+        "issues": {
+          "production/unused-cm": [
+            { "group": "__root__", "level": 1, "message": "[POP-400] Used? Unable to locate resource reference" }
+          ]
+        }
+      },
+      {
+        "sanitizer": "pods",
+        "gvr": "v1/pods",
+        "issues": {
+          "production/api-7d8": [
+            { "group": "container-x", "level": 1, "message": "[POP-106] No image tag/digest pinned; using latest is unwise" }
+          ]
+        }
+      }
+    ]
+  }
+}
