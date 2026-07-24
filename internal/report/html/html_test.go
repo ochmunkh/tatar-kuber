@@ -29,7 +29,7 @@ func TestRender_HTML(t *testing.T) {
 		"CIS-5.2.5", "MITRE-T1611", // compliance badges
 		"Scanner хувилбар", "0.67.2", // metadata footer (mn label)
 		"Nodes", "142", // inventory section
-		"Trivy Advisory", "https://avd.aquasec.com/misconfig/ksv017", // labeled reference link
+		"Эх сурвалж", "Trivy Advisory", "https://avd.aquasec.com/misconfig/ksv017", // References гарчиг + labeled link
 		"Онооны зурвас", // band legend (mn)
 	} {
 		if !strings.Contains(s, want) {
