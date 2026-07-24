@@ -106,6 +106,7 @@ type Metadata struct {
 	StartedAt       string            `json:"started_at"`
 	FinishedAt      string            `json:"finished_at"`
 	ResultHash      string            `json:"result_hash"`
+	Inventory       map[string]int    `json:"inventory,omitempty"` // cluster объектын тоо (сонголт)
 }
 
 type Summary struct {

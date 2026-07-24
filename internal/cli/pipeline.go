@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -42,20 +43,39 @@ func buildPipeline(registryPath string) (*orchestrator.Pipeline, error) {
 	), nil
 }
 
-// loadRawDir — <dir>/{trivy,kubescape,checkov,popeye}.json файлуудыг RawResult болгож ачаална.
-func loadRawDir(dir string) ([]scanner.RawResult, error) {
+// loadRawDir — <dir>/{trivy,kubescape,checkov,popeye}.json-г RawResult болгож ачаална.
+// Сонголттойгоор versions.json (scanner->version) ба inventory.json (объект->тоо)-г уншина.
+func loadRawDir(dir string) ([]scanner.RawResult, map[string]int, error) {
 	names := []string{"trivy", "kubescape", "checkov", "popeye"}
 	var raws []scanner.RawResult
 	for _, n := range names {
-		path := filepath.Join(dir, n+".json")
-		data, err := os.ReadFile(path)
+		data, err := os.ReadFile(filepath.Join(dir, n+".json"))
 		if err != nil {
 			continue // тухайн scanner-ийн raw байхгүй бол алгасна
 		}
 		raws = append(raws, scanner.RawResult{Scanner: n, Format: "json", Data: data})
 	}
 	if len(raws) == 0 {
-		return nil, fmt.Errorf("%s дотор scanner raw JSON олдсонгүй", dir)
+		return nil, nil, fmt.Errorf("%s дотор scanner raw JSON олдсонгүй", dir)
 	}
-	return raws, nil
+
+	// versions.json (сонголт): scanner -> version
+	if vb, err := os.ReadFile(filepath.Join(dir, "versions.json")); err == nil {
+		var vers map[string]string
+		if json.Unmarshal(vb, &vers) == nil {
+			for i := range raws {
+				if v, ok := vers[raws[i].Scanner]; ok {
+					raws[i].Version = v
+				}
+			}
+		}
+	}
+
+	// inventory.json (сонголт): объект -> тоо
+	var inv map[string]int
+	if ib, err := os.ReadFile(filepath.Join(dir, "inventory.json")); err == nil {
+		_ = json.Unmarshal(ib, &inv)
+	}
+
+	return raws, inv, nil
 }

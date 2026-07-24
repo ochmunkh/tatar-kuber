@@ -34,7 +34,8 @@ func New(reg *canonical.Registry, adapters ...scanner.ScannerAdapter) *Pipeline 
 // Meta — scan-ий тодорхойлолт.
 type Meta struct {
 	ClusterName string
-	ScanMode    string // local | remote
+	ScanMode    string         // local | remote
+	Inventory   map[string]int // cluster объектын тоо (сонголт)
 }
 
 // Run — Available adapter-уудыг ажиллуулж raw цуглуулаад Process руу дамжуулна.
@@ -106,6 +107,7 @@ func (p *Pipeline) Process(raws []scanner.RawResult, m Meta) (finding.ScanResult
 		Findings: scored,
 	}
 	res.Metadata.ResultHash = resultHash(scored)
+	res.Metadata.Inventory = m.Inventory
 	return res, nil
 }
 

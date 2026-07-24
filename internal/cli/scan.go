@@ -41,12 +41,12 @@ func cmdScan(args []string) int {
 
 	if *rawDir != "" {
 		// Offline ingest: цуглуулсан raw-г нэгтгэнэ.
-		raws, err := loadRawDir(*rawDir)
+		raws, inv, err := loadRawDir(*rawDir)
 		if err != nil {
 			fmt.Fprintln(os.Stderr, "алдаа:", err)
 			return 2
 		}
-		r, err := p.Process(raws, orchestrator.Meta{ClusterName: *cluster, ScanMode: mode})
+		r, err := p.Process(raws, orchestrator.Meta{ClusterName: *cluster, ScanMode: mode, Inventory: inv})
 		if err != nil {
 			fmt.Fprintln(os.Stderr, "алдаа:", err)
 			return 2
