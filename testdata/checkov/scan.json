@@ -1,0 +1,42 @@
+[
+  {
+    "check_type": "kubernetes",
+    "results": {
+      "passed_checks": [
+        { "check_id": "CKV_K8S_23", "check_name": "Minimize root", "resource": "Deployment.production.api" }
+      ],
+      "failed_checks": [
+        {
+          "check_id": "CKV_K8S_16",
+          "check_name": "Container should not be privileged",
+          "resource": "Deployment.production.api",
+          "guideline": "https://docs.bridgecrew.io/docs/privileged",
+          "severity": null,
+          "file_path": "/deploy.yaml"
+        },
+        {
+          "check_id": "CKV_K8S_20",
+          "check_name": "Containers should not run with allowPrivilegeEscalation",
+          "resource": "Deployment.production.api",
+          "guideline": "https://docs.bridgecrew.io/docs/privilege-escalation",
+          "severity": null,
+          "file_path": "/deploy.yaml"
+        },
+        {
+          "check_id": "CKV_K8S_8",
+          "check_name": "Liveness Probe Should be Configured",
+          "resource": "Deployment.production.api",
+          "severity": null,
+          "file_path": "/deploy.yaml"
+        },
+        {
+          "check_id": "CKV_K8S_49",
+          "check_name": "Minimize wildcard use in Roles and ClusterRoles",
+          "resource": "ClusterRole.cluster-reader",
+          "severity": null,
+          "file_path": "/rbac.yaml"
+        }
+      ]
+    }
+  }
+]

@@ -480,7 +480,7 @@ controls:
     mappings:
       trivy:     []
       kubescape: ["C-0018"]
-      checkov:   ["CKV_K8S_8"]
+      checkov:   ["CKV_K8S_9"]
       popeye:    ["POP-102"]
 
   - id: TATAR-OPS-002
@@ -495,7 +495,7 @@ controls:
     mappings:
       trivy:     []
       kubescape: ["C-0018"]
-      checkov:   ["CKV_K8S_9"]
+      checkov:   ["CKV_K8S_8"]
       popeye:    ["POP-103"]
 
   - id: TATAR-OPS-003
