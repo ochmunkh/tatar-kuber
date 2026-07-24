@@ -6,3 +6,5 @@ scan-result.json
 raw/
 *.pdf
 .DS_Store
+
+/examples/out/

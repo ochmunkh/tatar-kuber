@@ -84,3 +84,33 @@ Remote scan-д зориулсан least-privilege ClusterRole:
 ## License
 
 Open Core. Community CLI — Apache-2.0.
+
+## Quick demo (offline ingest)
+
+Scanner binary шаардлагагүй — цуглуулсан raw JSON-оос:
+
+```bash
+go run ./cmd/tatar-kuber scan --raw-dir examples/raw --cluster production \
+    --registry schema/canonical-controls.yaml -o examples/out
+go run ./cmd/tatar-kuber report --input examples/out/scan-result.json -o html --out report.html
+go run ./cmd/tatar-kuber report --input examples/out/scan-result.json -o sarif --out out.sarif
+```
+
+`examples/raw/` дотор 4 scanner-ийн жишээ гаралт бий. Pipeline тэдгээрийг
+canonical control руу normalize хийж, дедуп хийж (ж: privileged container-ыг
+Trivy+Kubescape+Checkov гурвуулаа олоод нэг finding, `confidence=HIGH`),
+risk оноо тооцож, JSON/SARIF/HTML тайлан гаргана.
+
+## Status (v0.2.0-mvp)
+
+Бүрэн ажиллагаатай engine + тайлан, бүх модуль тесттэй:
+
+- ✅ Canonical registry (33 control) + validation
+- ✅ 4 scanner adapter: Trivy, Kubescape, Checkov, Popeye (Normalize + fixtures)
+- ✅ Dedup engine (cross-scanner merge, found_by, confidence)
+- ✅ Blind-shot engine (downgrade + annotate)
+- ✅ Risk scoring v1.2 (Level 1 finding + Level 2 cluster 0–100)
+- ✅ Orchestrator pipeline + detrministik result_hash
+- ✅ Reports: JSON · SARIF 2.1.0 · HTML dashboard
+- ✅ CLI: scan (offline ingest ажиллана) · report · version
+- ⏳ Live scan (scanner binary дуудлага), update (cosign verify), remote client-go — дараагийн үе
