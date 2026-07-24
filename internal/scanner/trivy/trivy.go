@@ -11,7 +11,7 @@ import (
 
 	"github.com/ochmunkh/tatar-kuber/internal/canonical"
 	"github.com/ochmunkh/tatar-kuber/internal/finding"
-	"github.com/ochmunkh/tatar-kuber/internal/risk"
+	"github.com/ochmunkh/tatar-kuber/internal/normalizer"
 	"github.com/ochmunkh/tatar-kuber/internal/scanner"
 )
 
@@ -37,7 +37,6 @@ func (s *Scanner) Available() (bool, error) {
 }
 
 func (s *Scanner) Version(ctx context.Context) (string, error) {
-	// TODO: "trivy --version" -> parse.
 	return "", errors.New("not implemented")
 }
 
@@ -56,8 +55,8 @@ type trivyReport struct {
 		Kind      string `json:"Kind"`
 		Name      string `json:"Name"`
 		Results   []struct {
-			Target           string `json:"Target"`
-			Class            string `json:"Class"`
+			Target            string `json:"Target"`
+			Class             string `json:"Class"`
 			Misconfigurations []struct {
 				AVDID       string   `json:"AVDID"`
 				ID          string   `json:"ID"`
@@ -86,7 +85,7 @@ type trivyReport struct {
 	} `json:"Resources"`
 }
 
-// Normalize — Trivy raw JSON -> []finding.Finding (canonical-оор баяжуулсан).
+// Normalize — Trivy raw JSON -> []finding.Finding (canonical-аар баяжуулсан).
 func (s *Scanner) Normalize(raw scanner.RawResult) ([]finding.Finding, error) {
 	var rep trivyReport
 	if err := json.Unmarshal(raw.Data, &rep); err != nil {
@@ -98,7 +97,8 @@ func (s *Scanner) Normalize(raw scanner.RawResult) ([]finding.Finding, error) {
 		for _, r := range res.Results {
 			for _, m := range r.Misconfigurations {
 				ctx := canonical.ResolverContext{ResourceKind: res.Kind, Namespace: res.Namespace, Severity: m.Severity}
-				if f, ok := s.build(m.AVDID, ctx, resource, res.Namespace, m.Title, m.Description, m.Resolution, m.Severity, m.References); ok {
+				meta := normalizer.Meta{Resource: resource, Namespace: res.Namespace, Title: m.Title, Description: m.Description, Remediation: m.Resolution, Severity: m.Severity, References: m.References}
+				if f, ok := normalizer.Build(s.resolver, "trivy", m.AVDID, ctx, meta, s.now); ok {
 					out = append(out, f)
 				}
 			}
@@ -108,8 +108,8 @@ func (s *Scanner) Normalize(raw scanner.RawResult) ([]finding.Finding, error) {
 				if v.FixedVersion != "" {
 					rem = fmt.Sprintf("%s-г %s руу шинэчилнэ", v.PkgName, v.FixedVersion)
 				}
-				title := fmt.Sprintf("%s: %s", v.VulnerabilityID, v.Title)
-				if f, ok := s.build("CVE-*", ctx, resource, res.Namespace, title, v.Title, rem, v.Severity, refs(v.PrimaryURL, v.VulnerabilityID)); ok {
+				meta := normalizer.Meta{Resource: resource, Namespace: res.Namespace, Title: v.VulnerabilityID + ": " + v.Title, Description: v.Title, Remediation: rem, Severity: v.Severity, References: refs(v.PrimaryURL, v.VulnerabilityID)}
+				if f, ok := normalizer.Build(s.resolver, "trivy", "CVE-*", ctx, meta, s.now); ok {
 					out = append(out, f)
 				}
 			}
@@ -119,65 +119,14 @@ func (s *Scanner) Normalize(raw scanner.RawResult) ([]finding.Finding, error) {
 					detail = "image"
 				}
 				ctx := canonical.ResolverContext{ResourceKind: res.Kind, Namespace: res.Namespace, Severity: sec.Severity, Detail: detail}
-				if f, ok := s.build("secret", ctx, resource, res.Namespace, sec.Title, "Илэрсэн нууц: "+sec.Category, "Нууцыг кодоос салгаж Secret store руу шилжүүлнэ", sec.Severity, nil); ok {
+				meta := normalizer.Meta{Resource: resource, Namespace: res.Namespace, Title: sec.Title, Description: "Илэрсэн нууц: " + sec.Category, Remediation: "Нууцыг кодоос салгаж Secret store руу шилжүүлнэ", Severity: sec.Severity}
+				if f, ok := normalizer.Build(s.resolver, "trivy", "secret", ctx, meta, s.now); ok {
 					out = append(out, f)
 				}
 			}
 		}
 	}
 	return out, nil
-}
-
-// build — нэг Trivy илрүүлэлтийг canonical-аар баяжуулж Finding болгоно.
-func (s *Scanner) build(ruleID string, ctx canonical.ResolverContext, resource, ns, title, desc, rem, sev string, references []string) (finding.Finding, bool) {
-	cid, ok := s.resolver.ResolveOne("trivy", ruleID, ctx)
-	if !ok {
-		// canonical registry-д зураглал алга — алгасаж, normalizer-т warning.
-		return finding.Finding{}, false
-	}
-	ctrl, _ := s.resolver.Control(cid)
-	severity := normSeverity(sev)
-	if severity == "" {
-		severity = finding.Severity(ctrl.DefaultSeverity)
-	}
-	ts := s.now()
-	return finding.Finding{
-		ID:               finding.StableID(cid, resource, ns),
-		CanonicalControl: cid,
-		Resource:         resource,
-		Namespace:        ns,
-		Type:             finding.Type(ctrl.Type),
-		Category:         ctrl.Category,
-		Severity:         severity,
-		Title:            title,
-		Description:      desc,
-		Remediation:      rem,
-		FoundBy:          []string{"trivy"},
-		Confidence:       risk.Confidence(1, ctrl.Heuristic), // ганц scanner + determinism
-		BlindShot:        false,
-		Status:           finding.StatusOpen,
-		FirstSeen:        ts,
-		LastSeen:         ts,
-		References:       references,
-		RawRefs:          []finding.RawRef{{Scanner: "trivy", RuleID: ruleID}},
-	}, true
-}
-
-func normSeverity(s string) finding.Severity {
-	switch strings.ToUpper(s) {
-	case "CRITICAL":
-		return finding.SeverityCritical
-	case "HIGH":
-		return finding.SeverityHigh
-	case "MEDIUM":
-		return finding.SeverityMedium
-	case "LOW":
-		return finding.SeverityLow
-	case "UNKNOWN", "":
-		return finding.SeverityInfo
-	default:
-		return finding.SeverityInfo
-	}
 }
 
 func refs(url, cve string) []string {

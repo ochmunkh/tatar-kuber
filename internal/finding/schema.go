@@ -104,3 +104,21 @@ type Summary struct {
 	RiskBand      string           `json:"risk_band"`
 	TotalFindings int              `json:"total_findings"`
 }
+
+// NormalizeSeverity — scanner severity string -> TATAR Severity. Хоосон/UNKNOWN -> "".
+func NormalizeSeverity(s string) Severity {
+	switch s {
+	case "CRITICAL", "Critical", "critical":
+		return SeverityCritical
+	case "HIGH", "High", "high":
+		return SeverityHigh
+	case "MEDIUM", "Medium", "medium":
+		return SeverityMedium
+	case "LOW", "Low", "low":
+		return SeverityLow
+	case "INFO", "Info", "info", "INFORMATIONAL":
+		return SeverityInfo
+	default:
+		return "" // тодорхойгүй — canonical default_severity ашиглана
+	}
+}

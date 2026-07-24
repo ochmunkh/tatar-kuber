@@ -1,0 +1,28 @@
+{
+  "results": [
+    {
+      "resourceID": "apps/v1//production/Deployment/api",
+      "controls": [
+        { "controlID": "C-0057", "name": "Privileged container", "status": { "status": "failed" } },
+        { "controlID": "C-0260", "name": "Ingress and Egress blocked", "status": { "status": "failed" } },
+        { "controlID": "C-0013", "name": "Non-root containers", "status": { "status": "passed" } }
+      ]
+    },
+    {
+      "resourceID": "rbac.authorization.k8s.io/v1//ClusterRoleBinding/admin-bind",
+      "controls": [
+        { "controlID": "C-0035", "name": "Cluster-admin binding", "status": { "status": "failed" } }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "resourceID": "apps/v1//production/Deployment/api",
+      "object": { "kind": "Deployment", "metadata": { "name": "api", "namespace": "production" } }
+    },
+    {
+      "resourceID": "rbac.authorization.k8s.io/v1//ClusterRoleBinding/admin-bind",
+      "object": { "kind": "ClusterRoleBinding", "metadata": { "name": "admin-bind" } }
+    }
+  ]
+}
