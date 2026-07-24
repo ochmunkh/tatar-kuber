@@ -37,9 +37,11 @@ func Build(rs *canonical.Resolver, scanner, ruleID string, ctx canonical.Resolve
 	if title == "" {
 		title = ctrl.Title
 	}
-	rem := m.Remediation
+	// Засварыг canonical registry-ээс (curated монгол текст) эхэнд авна;
+	// байхгүй бол scanner-ийн өгсөн текст рүү шилжинэ.
+	rem := ctrl.Remediation
 	if rem == "" {
-		rem = ctrl.Remediation
+		rem = m.Remediation
 	}
 	ts := now()
 
