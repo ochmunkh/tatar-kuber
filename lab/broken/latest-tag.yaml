@@ -1,0 +1,16 @@
+# BROKEN: :latest tag + missing resource limits (TATAR-IMG-003, TATAR-CON-010)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: latest-app
+  namespace: production
+  labels: { app: latest-app }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: latest-app } }
+  template:
+    metadata: { labels: { app: latest-app } }
+    spec:
+      containers:
+        - name: app
+          image: redis:latest      # <-- TATAR-IMG-003 (no resource limits -> TATAR-CON-010)

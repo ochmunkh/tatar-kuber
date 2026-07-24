@@ -1,0 +1,19 @@
+# BROKEN: hostNetwork + hostPID (TATAR-CON-006, TATAR-CON-005)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: host-ns-app
+  namespace: production
+  labels: { app: host-ns-app }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: host-ns-app } }
+  template:
+    metadata: { labels: { app: host-ns-app } }
+    spec:
+      hostNetwork: true    # <-- TATAR-CON-006
+      hostPID: true        # <-- TATAR-CON-005
+      containers:
+        - name: app
+          image: alpine:3.19
+          command: ["sleep", "3600"]

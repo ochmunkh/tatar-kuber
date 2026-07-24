@@ -8,3 +8,5 @@ raw/
 .DS_Store
 
 /examples/out/
+
+/lab/out/
