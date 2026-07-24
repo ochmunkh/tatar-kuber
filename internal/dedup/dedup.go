@@ -55,10 +55,6 @@ func Deduplicate(findings []finding.Finding, reg *canonical.Registry) []finding.
 			if sevRank[f.OriginalSeverity] > sevRank[merged.OriginalSeverity] {
 				merged.OriginalSeverity = f.OriginalSeverity
 			}
-			// хамгийн дэлгэрэнгүй evidence-ийг сонгоно (ж: kubescape-ийн spec зам)
-			if len(f.Evidence) > len(merged.Evidence) {
-				merged.Evidence = f.Evidence
-			}
 			for _, s := range f.FoundBy {
 				foundBy[s] = true
 			}
@@ -76,6 +72,7 @@ func Deduplicate(findings []finding.Finding, reg *canonical.Registry) []finding.
 		merged.FoundBy = sortedKeys(foundBy)
 		merged.References = sortedKeys(refs)
 		merged.RawRefs = mergeRawRefs(g)
+		merged.Evidence = mergeEvidence(g)
 
 		heur := false
 		if c, ok := reg.Get(merged.CanonicalControl); ok {
@@ -98,6 +95,32 @@ func sortedKeys(m map[string]bool) []string {
 	}
 	sort.Strings(ks)
 	return ks
+}
+
+// mergeEvidence — бүлэг доторх бүх scanner-ийн evidence-ийг нэгтгэнэ (union),
+// scanner+path+detail-аар давхардлыг арилгаж, тогтвортой эрэмбэлнэ.
+func mergeEvidence(g []finding.Finding) []finding.Evidence {
+	seen := map[string]bool{}
+	var out []finding.Evidence
+	for _, f := range g {
+		for _, e := range f.Evidence {
+			k := e.Scanner + "|" + e.Path + "|" + e.Detail
+			if !seen[k] {
+				seen[k] = true
+				out = append(out, e)
+			}
+		}
+	}
+	sort.Slice(out, func(i, j int) bool {
+		if out[i].Scanner != out[j].Scanner {
+			return out[i].Scanner < out[j].Scanner
+		}
+		if out[i].Path != out[j].Path {
+			return out[i].Path < out[j].Path
+		}
+		return out[i].Detail < out[j].Detail
+	})
+	return out
 }
 
 func mergeRawRefs(g []finding.Finding) []finding.RawRef {

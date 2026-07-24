@@ -12,7 +12,7 @@ func TestRender_HTML(t *testing.T) {
 	res := finding.ScanResult{
 		Metadata: finding.Metadata{ClusterName: "production", ScanMode: "remote", ResultHash: "sha256:abc"},
 		Summary:  finding.Summary{Counts: map[finding.Severity]int{finding.SeverityHigh: 1}, RiskScore: 78, RiskBand: "Good", TotalFindings: 1},
-		Findings: []finding.Finding{{CanonicalControl: "TATAR-CON-001", Resource: "deployment/api", Namespace: "production", Severity: finding.SeverityHigh, Title: "Privileged container", Evidence: "spec.template.spec.containers[0].securityContext.privileged", Remediation: "securityContext.privileged=false болгоно", FoundBy: []string{"trivy", "kubescape"}, Confidence: finding.ConfidenceHigh}},
+		Findings: []finding.Finding{{CanonicalControl: "TATAR-CON-001", Resource: "deployment/api", Namespace: "production", Severity: finding.SeverityHigh, Title: "Privileged container", Evidence: []finding.Evidence{{Scanner: "kubescape", Path: "spec.template.spec.containers[0].securityContext.privileged", Value: "зөвлөмж: false"}}, Remediation: "securityContext.privileged=false болгоно", FoundBy: []string{"trivy", "kubescape"}, Confidence: finding.ConfidenceHigh}},
 	}
 	var b bytes.Buffer
 	if err := Render(&b, res); err != nil {

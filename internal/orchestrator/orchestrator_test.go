@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/ochmunkh/tatar-kuber/internal/canonical"
+	"github.com/ochmunkh/tatar-kuber/internal/finding"
 	"github.com/ochmunkh/tatar-kuber/internal/scanner"
 	"github.com/ochmunkh/tatar-kuber/internal/scanner/checkov"
 	"github.com/ochmunkh/tatar-kuber/internal/scanner/kubescape"
@@ -50,7 +51,7 @@ func TestPipeline_EndToEnd(t *testing.T) {
 		FoundBy    []string
 		Confidence string
 		Severity   string
-		Evidence   string
+		Evidence   []finding.Evidence
 	}
 	for _, f := range res.Findings {
 		if f.CanonicalControl == "TATAR-CON-001" && f.Resource == "deployment/api" {
@@ -58,7 +59,7 @@ func TestPipeline_EndToEnd(t *testing.T) {
 				FoundBy    []string
 				Confidence string
 				Severity   string
-				Evidence   string
+				Evidence   []finding.Evidence
 			}{f.FoundBy, string(f.Confidence), string(f.Severity), f.Evidence}
 		}
 	}
@@ -76,9 +77,18 @@ func TestPipeline_EndToEnd(t *testing.T) {
 	if priv.Confidence != "HIGH" {
 		t.Errorf("CON-001 confidence=%s, want HIGH (олон scanner)", priv.Confidence)
 	}
-	// dedup нь хамгийн дэлгэрэнгүй evidence-ийг (kubescape spec зам) сонгосон эсэх
-	if !strings.Contains(priv.Evidence, "securityContext.privileged") {
-		t.Errorf("CON-001 evidence=%q, spec зам агуулаагүй", priv.Evidence)
+	// dedup нь бүх scanner-ийн evidence-ийг нэгтгэсэн бөгөөд spec зам агуулсан эсэх
+	hasPath := false
+	for _, e := range priv.Evidence {
+		if strings.Contains(e.Path, "securityContext.privileged") {
+			hasPath = true
+		}
+	}
+	if !hasPath {
+		t.Errorf("CON-001 evidence=%+v, securityContext.privileged spec зам агуулаагүй", priv.Evidence)
+	}
+	if len(priv.Evidence) < 2 {
+		t.Errorf("CON-001 evidence=%d ширхэг, олон scanner-ийн нотолгоо нэгдсэн байх ёстой", len(priv.Evidence))
 	}
 
 	// summary + score

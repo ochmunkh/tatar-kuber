@@ -76,11 +76,15 @@ func (s *Scanner) Normalize(raw scanner.RawResult) ([]finding.Finding, error) {
 			if fc.Guideline != "" {
 				refsList = []string{fc.Guideline}
 			}
-			ev := fc.FilePath
+			path := fc.FilePath
 			if len(fc.FileLineRange) == 2 {
-				ev = fmt.Sprintf("%s:%d-%d", fc.FilePath, fc.FileLineRange[0], fc.FileLineRange[1])
+				path = fmt.Sprintf("%s:%d-%d", fc.FilePath, fc.FileLineRange[0], fc.FileLineRange[1])
 			}
-			meta := normalizer.Meta{Resource: resource, Namespace: ns, Title: fc.CheckName, Evidence: ev, Severity: fc.Severity, References: refsList}
+			var evs []finding.Evidence
+			if path != "" {
+				evs = []finding.Evidence{{Scanner: "checkov", Path: path}}
+			}
+			meta := normalizer.Meta{Resource: resource, Namespace: ns, Title: fc.CheckName, Evidence: evs, Severity: fc.Severity, References: refsList}
 			if f, ok := normalizer.Build(s.resolver, "checkov", fc.CheckID, ctx, meta, s.now); ok {
 				out = append(out, f)
 			}

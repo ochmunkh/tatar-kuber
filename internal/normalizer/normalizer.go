@@ -15,7 +15,7 @@ type Meta struct {
 	Namespace   string
 	Title       string
 	Description string
-	Evidence    string // асуудал яг хаана (spec зам / файл:мөр / утга)
+	Evidence    []finding.Evidence // асуудал яг хаана (scanner бүрээр)
 	Remediation string
 	Severity    string // scanner-ийн severity (хоосон бол canonical default)
 	References  []string
@@ -45,6 +45,13 @@ func Build(rs *canonical.Resolver, scanner, ruleID string, ctx canonical.Resolve
 		rem = m.Remediation
 	}
 	ts := now()
+
+	ev := m.Evidence
+	for i := range ev {
+		if ev[i].Scanner == "" {
+			ev[i].Scanner = scanner
+		}
+	}
 
 	return finding.Finding{
 		ID:               finding.StableID(cid, m.Resource, m.Namespace),

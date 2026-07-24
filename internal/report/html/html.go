@@ -45,7 +45,11 @@ const dashboard = `<!DOCTYPE html>
  .bs{background:#6b46c1;color:#fff;padding:1px 6px;border-radius:8px;font-size:10px}
  .fb{color:#555;font-size:12px}
  .fix{color:#1F6F54;font-size:12px}
- .ev{font-family:Consolas,monospace;font-size:11px;color:#333;word-break:break-all;max-width:280px}
+ .ev{font-size:11px;color:#333;max-width:320px}
+ .evrow{margin:1px 0;word-break:break-all}
+ .evrow code{font-family:Consolas,monospace;color:#1a1a1a}
+ .evs{display:inline-block;background:#e6edf3;color:#2A4D69;border-radius:6px;padding:0 5px;font-size:10px;font-weight:700}
+ .evv{color:#1F6F54}
 </style>
 </head>
 <body>
@@ -72,7 +76,7 @@ const dashboard = `<!DOCTYPE html>
     <td>{{.CanonicalControl}}<br><span class="fb">{{.Category}}</span></td>
     <td>{{if .Namespace}}{{.Namespace}}/{{end}}{{.Resource}}</td>
     <td>{{.Title}}{{if .BlindShot}}<br><span class="fb">{{.BlindShotReason}}</span>{{end}}</td>
-    <td class="ev">{{if .Evidence}}{{.Evidence}}{{else}}—{{end}}</td>
+    <td class="ev">{{if .Evidence}}{{range .Evidence}}<div class="evrow"><span class="evs">{{.Scanner}}</span> {{if .Path}}<code>{{.Path}}</code>{{end}}{{if .Detail}}{{.Detail}}{{end}}{{if .Value}} <span class="evv">({{.Value}})</span>{{end}}</div>{{end}}{{else}}—{{end}}</td>
     <td class="fix">{{.Remediation}}</td>
     <td class="fb">{{range $i,$s := .FoundBy}}{{if $i}}, {{end}}{{$s}}{{end}}</td>
     <td class="fb">{{.Confidence}}</td>

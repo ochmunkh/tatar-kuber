@@ -91,24 +91,25 @@ func (s *Scanner) Normalize(raw scanner.RawResult) ([]finding.Finding, error) {
 			if c.Status.Status != "failed" {
 				continue // зөвхөн унасан control-ыг finding болгоно
 			}
-			ev := ""
+			var evs []finding.Evidence
 			for _, rule := range c.Rules {
 				for _, pth := range rule.Paths {
+					e := finding.Evidence{Scanner: "kubescape"}
 					if pth.FixPath.Path != "" {
-						ev = pth.FixPath.Path
+						e.Path = pth.FixPath.Path
+						if pth.FixPath.Value != "" {
+							e.Value = "зөвлөмж: " + pth.FixPath.Value
+						}
 					} else if pth.FailedPath != "" {
-						ev = pth.FailedPath
+						e.Path = pth.FailedPath
 					}
-					if ev != "" {
-						break
+					if e.Path != "" {
+						evs = append(evs, e)
 					}
-				}
-				if ev != "" {
-					break
 				}
 			}
 			ctx := canonical.ResolverContext{ResourceKind: o.Kind, Namespace: o.NS}
-			meta := normalizer.Meta{Resource: resource, Namespace: o.NS, Title: c.Name, Evidence: ev}
+			meta := normalizer.Meta{Resource: resource, Namespace: o.NS, Title: c.Name, Evidence: evs}
 			if f, ok := normalizer.Build(s.resolver, "kubescape", c.ControlID, ctx, meta, s.now); ok {
 				out = append(out, f)
 			}

@@ -89,6 +89,7 @@ func (p *Pipeline) Process(raws []scanner.RawResult, m Meta) (finding.ScanResult
 	deduped := dedup.Deduplicate(all, p.reg)
 	shot := blindshot.Apply(deduped, p.reg)
 	scored, score, band := risk.ApplyScores(shot)
+	sortBySeverity(scored) // Critical -> High -> Medium -> Low -> Info (тайланд эрэмбэ)
 
 	res := finding.ScanResult{
 		SchemaVersion: "1.0",
@@ -106,6 +107,24 @@ func (p *Pipeline) Process(raws []scanner.RawResult, m Meta) (finding.ScanResult
 	}
 	res.Metadata.ResultHash = resultHash(scored)
 	return res, nil
+}
+
+var sevRank = map[finding.Severity]int{
+	finding.SeverityCritical: 5, finding.SeverityHigh: 4, finding.SeverityMedium: 3,
+	finding.SeverityLow: 2, finding.SeverityInfo: 1,
+}
+
+// sortBySeverity — Critical эхэнд. Тэнцвэл risk_contribution их нь, дараа нь ID.
+func sortBySeverity(fs []finding.Finding) {
+	sort.SliceStable(fs, func(i, j int) bool {
+		if sevRank[fs[i].Severity] != sevRank[fs[j].Severity] {
+			return sevRank[fs[i].Severity] > sevRank[fs[j].Severity]
+		}
+		if fs[i].RiskContribution != fs[j].RiskContribution {
+			return fs[i].RiskContribution > fs[j].RiskContribution
+		}
+		return fs[i].ID < fs[j].ID
+	})
 }
 
 func summarize(fs []finding.Finding, score int, band string) finding.Summary {

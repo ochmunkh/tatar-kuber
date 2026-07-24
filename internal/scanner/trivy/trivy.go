@@ -102,11 +102,11 @@ func (s *Scanner) Normalize(raw scanner.RawResult) ([]finding.Finding, error) {
 		for _, r := range res.Results {
 			for _, m := range r.Misconfigurations {
 				ctx := canonical.ResolverContext{ResourceKind: res.Kind, Namespace: res.Namespace, Severity: m.Severity}
-				ev := m.CauseMetadata.Resource
-				if ev == "" && m.CauseMetadata.StartLine > 0 {
-					ev = fmt.Sprintf("%s:%d", r.Target, m.CauseMetadata.StartLine)
+				ev := finding.Evidence{Scanner: "trivy", Path: m.CauseMetadata.Resource}
+				if ev.Path == "" && m.CauseMetadata.StartLine > 0 {
+					ev.Path = fmt.Sprintf("%s:%d", r.Target, m.CauseMetadata.StartLine)
 				}
-				meta := normalizer.Meta{Resource: resource, Namespace: res.Namespace, Title: m.Title, Description: m.Description, Evidence: ev, Remediation: m.Resolution, Severity: m.Severity, References: m.References}
+				meta := normalizer.Meta{Resource: resource, Namespace: res.Namespace, Title: m.Title, Description: m.Description, Evidence: []finding.Evidence{ev}, Remediation: m.Resolution, Severity: m.Severity, References: m.References}
 				if f, ok := normalizer.Build(s.resolver, "trivy", m.AVDID, ctx, meta, s.now); ok {
 					out = append(out, f)
 				}
@@ -117,11 +117,16 @@ func (s *Scanner) Normalize(raw scanner.RawResult) ([]finding.Finding, error) {
 				if v.FixedVersion != "" {
 					rem = fmt.Sprintf("%s-г %s руу шинэчилнэ", v.PkgName, v.FixedVersion)
 				}
-				ev := v.PkgName
+				pkg := v.PkgName
 				if v.InstalledVersion != "" {
-					ev = v.PkgName + "@" + v.InstalledVersion
+					pkg = v.PkgName + "@" + v.InstalledVersion
 				}
-				meta := normalizer.Meta{Resource: resource, Namespace: res.Namespace, Title: v.VulnerabilityID + ": " + v.Title, Description: v.Title, Evidence: ev, Remediation: rem, Severity: v.Severity, References: refs(v.PrimaryURL, v.VulnerabilityID)}
+				val := ""
+				if v.FixedVersion != "" {
+					val = "fixed in " + v.FixedVersion
+				}
+				ev := finding.Evidence{Scanner: "trivy", Detail: pkg, Value: val}
+				meta := normalizer.Meta{Resource: resource, Namespace: res.Namespace, Title: v.VulnerabilityID + ": " + v.Title, Description: v.Title, Evidence: []finding.Evidence{ev}, Remediation: rem, Severity: v.Severity, References: refs(v.PrimaryURL, v.VulnerabilityID)}
 				if f, ok := normalizer.Build(s.resolver, "trivy", "CVE-*", ctx, meta, s.now); ok {
 					out = append(out, f)
 				}
@@ -132,7 +137,8 @@ func (s *Scanner) Normalize(raw scanner.RawResult) ([]finding.Finding, error) {
 					detail = "image"
 				}
 				ctx := canonical.ResolverContext{ResourceKind: res.Kind, Namespace: res.Namespace, Severity: sec.Severity, Detail: detail}
-				meta := normalizer.Meta{Resource: resource, Namespace: res.Namespace, Title: sec.Title, Description: "Илэрсэн нууц: " + sec.Category, Evidence: sec.Match, Remediation: "Нууцыг кодоос салгаж Secret store руу шилжүүлнэ", Severity: sec.Severity}
+				ev := finding.Evidence{Scanner: "trivy", Detail: sec.Match}
+				meta := normalizer.Meta{Resource: resource, Namespace: res.Namespace, Title: sec.Title, Description: "Илэрсэн нууц: " + sec.Category, Evidence: []finding.Evidence{ev}, Remediation: "Нууцыг кодоос салгаж Secret store руу шилжүүлнэ", Severity: sec.Severity}
 				if f, ok := normalizer.Build(s.resolver, "trivy", "secret", ctx, meta, s.now); ok {
 					out = append(out, f)
 				}

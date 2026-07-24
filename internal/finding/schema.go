@@ -52,6 +52,16 @@ type RawRef struct {
 	RuleID  string `json:"rule_id"`
 }
 
+// Evidence — асуудал яг хаана байгааг харуулах нотолгоо (scanner бүрээр).
+// Path: spec зам эсвэл файл:мөр. Value: ажиглагдсан/зөвлөмж утга.
+// Detail: чөлөөт текст (message, pkg@ver, secret match).
+type Evidence struct {
+	Scanner string `json:"scanner"`
+	Path    string `json:"path,omitempty"`
+	Value   string `json:"value,omitempty"`
+	Detail  string `json:"detail,omitempty"`
+}
+
 // Finding — атомын нэгж (Unified Schema §3).
 type Finding struct {
 	ID               string     `json:"id"`
@@ -64,7 +74,7 @@ type Finding struct {
 	OriginalSeverity Severity   `json:"original_severity,omitempty"`
 	Title            string     `json:"title"`
 	Description      string     `json:"description"`
-	Evidence         string     `json:"evidence,omitempty"` // асуудал яг хаана: spec зам / файл:мөр / утга
+	Evidence         []Evidence `json:"evidence,omitempty"` // асуудал яг хаана (scanner бүрээр)
 	Remediation      string     `json:"remediation"`
 	FoundBy          []string   `json:"found_by"`
 	Confidence       Confidence `json:"confidence"`
