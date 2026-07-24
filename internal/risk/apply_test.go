@@ -18,8 +18,9 @@ func TestApplyScores(t *testing.T) {
 	if scored[0].RiskContribution != 15 {
 		t.Errorf("risk_contribution=%v, want 15", scored[0].RiskContribution)
 	}
-	if score != 85 || band != "Good" {
-		t.Errorf("score=%d (%s), want 85 (Good)", score, band)
+	// Diminishing: total=15 -> 100/(1+0.15)=87 (Good)
+	if score != 87 || band != "Good" {
+		t.Errorf("score=%d (%s), want 87 (Good)", score, band)
 	}
 }
 

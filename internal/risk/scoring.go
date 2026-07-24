@@ -39,6 +39,9 @@ const (
 // LowPoolCap — бүх LOW finding-ийн нийт penalty дээд хязгаар.
 const LowPoolCap = 10.0
 
+// ScoreScale — diminishing загварын масштаб (K). Score = 100/(1 + P/K).
+const ScoreScale = 100.0
+
 // Context — finding-ийн орчны мэдээлэл (илрүүлэгчээс).
 type Context struct {
 	AssetContext float64 // Ctx*
@@ -63,8 +66,15 @@ func FindingRisk(f finding.Finding, ctx Context) float64 {
 	return w * ac * ex * c
 }
 
-// ClusterScore — Level 2 (0..100). penalties нь FindingRisk утгууд,
-// severities нь тэдгээрт харгалзах severity (LOW pool cap-д хэрэгтэй).
+// ClusterScore — Level 2 (0..100), DIMINISHING загвар (v1.2.1).
+//
+//	Total Penalty = Σ FindingRisk (CRITICAL/HIGH/MEDIUM)
+//	              + min(LowPoolCap, Σ FindingRisk (LOW))
+//	Score = 100 / (1 + Total Penalty / ScoreScale)
+//
+// Diminishing функц нь оноог хэзээ ч яг 0 болгодоггүй бөгөөд эрэмбийг
+// хадгална (linear-cap загварын saturate асуудлыг арилгана): penalty өссөөр
+// оноо жигд буурч, "дөнгөж босго давсан" ба "гамшигт" cluster-ыг ялгана.
 func ClusterScore(penalties []float64, severities []finding.Severity) (int, string) {
 	var high, low float64
 	for i, p := range penalties {
@@ -77,10 +87,12 @@ func ClusterScore(penalties []float64, severities []finding.Severity) (int, stri
 		}
 	}
 	total := high + math.Min(LowPoolCap, low)
-	total = math.Min(100, total)
-	score := int(math.Round(100 - total))
-	if score < 0 {
-		score = 0
+	score := int(math.Round(100 / (1 + total/ScoreScale)))
+	if score < 1 {
+		score = 1 // хэзээ ч яг 0 болохгүй
+	}
+	if score > 100 {
+		score = 100
 	}
 	return score, Band(score)
 }

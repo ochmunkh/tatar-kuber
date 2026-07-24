@@ -19,8 +19,9 @@ func TestClusterScore_DocExamples(t *testing.T) {
 		penA = append(penA, 1*CtxDevelopment*ExpInternal*1.0)
 		sevA = append(sevA, finding.SeverityLow)
 	}
-	if got, band := ClusterScore(penA, sevA); got != 75 || band != "Good" {
-		t.Errorf("Cluster A: got %d (%s), want 75 (Good)", got, band)
+	// Diminishing: total=25 -> 100/(1+0.25)=80 (Good)
+	if got, band := ClusterScore(penA, sevA); got != 80 || band != "Good" {
+		t.Errorf("Cluster A: got %d (%s), want 80 (Good)", got, band)
 	}
 
 	// Cluster B: 10 HIGH (prod, internet, MEDIUM conf) — 7*1.5*1.5*1.0=15.75 each → cap 100
@@ -30,7 +31,8 @@ func TestClusterScore_DocExamples(t *testing.T) {
 		penB = append(penB, 7*CtxProduction*ExpInternet*1.0)
 		sevB = append(sevB, finding.SeverityHigh)
 	}
-	if got, band := ClusterScore(penB, sevB); got != 0 || band != "Critical" {
-		t.Errorf("Cluster B: got %d (%s), want 0 (Critical)", got, band)
+	// Diminishing: total=157.5 -> 100/(1+1.575)=39 (Poor)
+	if got, band := ClusterScore(penB, sevB); got != 39 || band != "Poor" {
+		t.Errorf("Cluster B: got %d (%s), want 39 (Poor)", got, band)
 	}
 }
