@@ -1,0 +1,127 @@
+# deploy/least-privilege-clusterrole.yaml
+# ─────────────────────────────────────────────────────────────
+# TATAR-Kuber — Mode B (Remote Cluster Assessment) Least-Privilege RBAC
+#
+# Design Principle: READ-ONLY FIRST.
+#   - Зөвхөн get / list / watch. Ямар ч write / update / delete эрхгүй.
+#   - Customer орчинг ХЭЗЭЭ Ч өөрчлөхгүй.
+#   - Энэ ClusterRole нь Remote Scan-ийн CONTRACT юм: клиент энэ эрхийг
+#     олгосноор TATAR-Kuber аюулгүйгээр posture assessment хийнэ.
+# ─────────────────────────────────────────────────────────────
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: tatar-kuber-reader
+  labels:
+    app.kubernetes.io/name: tatar-kuber
+    app.kubernetes.io/component: security-scanning
+rules:
+  # Core resources
+  - apiGroups: [""]
+    resources:
+      - pods
+      - services
+      - configmaps
+      - namespaces
+      - serviceaccounts
+      - nodes
+      - endpoints
+      - persistentvolumes
+      - persistentvolumeclaims
+      - resourcequotas
+      - limitranges
+    verbs: ["get", "list", "watch"]
+
+  # Secret metadata (RBAC/mount шинжилгээнд.
+  #   Тэмдэглэл: Design Principle-ийн дагуу secret-ийн УТГЫГ default-оор
+  #   уншихгүй; зөвхөн оршин байгаа эсэх, mount холбоосыг шалгана.)
+  - apiGroups: [""]
+    resources:
+      - secrets
+    verbs: ["get", "list", "watch"]
+
+  # Workloads
+  - apiGroups: ["apps"]
+    resources:
+      - deployments
+      - statefulsets
+      - daemonsets
+      - replicasets
+    verbs: ["get", "list", "watch"]
+
+  - apiGroups: ["batch"]
+    resources:
+      - jobs
+      - cronjobs
+    verbs: ["get", "list", "watch"]
+
+  # Networking (NetworkPolicy шинжилгээ, exposure)
+  - apiGroups: ["networking.k8s.io"]
+    resources:
+      - networkpolicies
+      - ingresses
+    verbs: ["get", "list", "watch"]
+
+  # RBAC (эрхийн шинжилгээ — cluster-admin/wildcard/anonymous)
+  - apiGroups: ["rbac.authorization.k8s.io"]
+    resources:
+      - roles
+      - rolebindings
+      - clusterroles
+      - clusterrolebindings
+    verbs: ["get", "list", "watch"]
+
+  # Policy
+  - apiGroups: ["policy"]
+    resources:
+      - poddisruptionbudgets
+    verbs: ["get", "list", "watch"]
+
+  # Storage
+  - apiGroups: ["storage.k8s.io"]
+    resources:
+      - storageclasses
+    verbs: ["get", "list", "watch"]
+
+  # Discovery (Popeye endpoint reference)
+  - apiGroups: ["discovery.k8s.io"]
+    resources:
+      - endpointslices
+    verbs: ["get", "list", "watch"]
+
+  # Admission policy config
+  - apiGroups: ["admissionregistration.k8s.io"]
+    resources:
+      - validatingwebhookconfigurations
+      - mutatingwebhookconfigurations
+    verbs: ["get", "list", "watch"]
+
+  # Metrics (Popeye resource hygiene — сонголт, метрик сервертэй үед)
+  - apiGroups: ["metrics.k8s.io"]
+    resources:
+      - pods
+      - nodes
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: tatar-kuber
+  namespace: kube-system
+  labels:
+    app.kubernetes.io/name: tatar-kuber
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: tatar-kuber-reader-binding
+  labels:
+    app.kubernetes.io/name: tatar-kuber
+subjects:
+  - kind: ServiceAccount
+    name: tatar-kuber
+    namespace: kube-system
+roleRef:
+  kind: ClusterRole
+  name: tatar-kuber-reader
+  apiGroup: rbac.authorization.k8s.io

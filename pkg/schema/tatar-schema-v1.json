@@ -1,0 +1,34 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "TATAR-Kuber Finding",
+  "type": "object",
+  "required": ["id","canonical_control","resource","type","category","severity","title","description","remediation","found_by","confidence","blind_shot","status","first_seen","last_seen"],
+  "properties": {
+    "id":                { "type": "string", "pattern": "^TK-[0-9a-f]{6,}$" },
+    "canonical_control": { "type": "string", "pattern": "^TATAR-[A-Z]+-[0-9]{3}$" },
+    "resource":          { "type": "string" },
+    "namespace":         { "type": "string" },
+    "type":              { "enum": ["misconfiguration","vulnerability","secret","rbac","network","hygiene"] },
+    "category":          { "type": "string" },
+    "severity":          { "enum": ["CRITICAL","HIGH","MEDIUM","LOW","INFO"] },
+    "original_severity": { "enum": ["CRITICAL","HIGH","MEDIUM","LOW","INFO"] },
+    "title":             { "type": "string" },
+    "description":       { "type": "string" },
+    "remediation":       { "type": "string" },
+    "found_by":          { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "confidence":        { "enum": ["HIGH","MEDIUM","LOW"] },
+    "blind_shot":        { "type": "boolean" },
+    "blind_shot_reason": { "type": "string" },
+    "risk_contribution": { "type": "number" },
+    "status":            { "enum": ["OPEN","ACKNOWLEDGED","MITIGATION_PLANNED","FIXED","VERIFIED","CLOSED"] },
+    "owner":             { "type": "string" },
+    "first_seen":        { "type": "string", "format": "date-time" },
+    "last_seen":         { "type": "string", "format": "date-time" },
+    "references":        { "type": "array", "items": { "type": "string" } },
+    "raw_refs":          { "type": "array", "items": {
+        "type": "object",
+        "required": ["scanner","rule_id"],
+        "properties": { "scanner": {"type":"string"}, "rule_id": {"type":"string"} }
+    }}
+  }
+}

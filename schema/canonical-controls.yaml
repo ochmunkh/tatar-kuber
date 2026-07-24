@@ -1,0 +1,544 @@
+# schema/canonical-controls.yaml
+# TATAR Canonical Control Registry v1.0
+# ─────────────────────────────────────────────────────────────
+# АНХААР: Энэ файл бол TATAR-Kuber-ийн ГОЛ ХӨРӨНГӨ (product asset).
+#   - Canonical ID нь IMMUTABLE CONTRACT: дахин ашиглахгүй, дугаар
+#     өөрчлөхгүй, устгахгүй. Зөвхөн status: deprecated болно.
+#   - scanner mapping зөвхөн MVP stack: trivy | kubescape | checkov | popeye
+#     (kube-bench, kube-score стэкээс ХАСАГДСАН).
+#   - Доорх scanner rule ID-ууд ПРОВИЗИОН (provisional): tools.lock.yaml
+#     доторх тогтоосон scanner хувилбартай тулгаж validation test-ээр
+#     баталгаажуулсны дараа LOCK хийнэ.
+# ─────────────────────────────────────────────────────────────
+
+schema_version: "1.0"
+last_updated: "2026-07-24"
+
+categories:
+  - id: CON
+    name: Container Security
+  - id: RBAC
+    name: RBAC & Authorization
+  - id: NET
+    name: Network Security
+  - id: IMG
+    name: Image Security
+  - id: SEC
+    name: Secret Management
+  - id: OPS
+    name: Operational Health
+
+controls:
+  # ===================== Container Security (CON) =====================
+  - id: TATAR-CON-001
+    title: "Privileged container enabled"
+    category: "Container Security"
+    type: misconfiguration
+    default_severity: HIGH
+    status: active
+    description: "Container privileged=true эрхтэй ажиллаж, node-ийн бүх төхөөрөмжид хандах боломжтой."
+    remediation: "securityContext.privileged=false болгоно."
+    references: ["CIS-5.2.1", "MITRE-T1611"]
+    mappings:
+      trivy:     ["AVD-KSV0017"]
+      kubescape: ["C-0057"]
+      checkov:   ["CKV_K8S_16"]
+      popeye:    []
+    blind_shot_rules:
+      - namespace: "kube-system"
+        resource_match: "calico-node"
+        reason: "Known Kubernetes CNI networking component"
+        downgrade_to: INFO
+
+  - id: TATAR-CON-002
+    title: "Container running as root"
+    category: "Container Security"
+    type: misconfiguration
+    default_severity: MEDIUM
+    status: active
+    description: "Container UID 0 (root)-оор ажиллаж байна."
+    remediation: "securityContext.runAsNonRoot=true тохируулна."
+    references: ["CIS-5.2.6"]
+    mappings:
+      trivy:     ["AVD-KSV0012"]
+      kubescape: ["C-0013"]
+      checkov:   ["CKV_K8S_23"]
+      popeye:    []
+
+  - id: TATAR-CON-003
+    title: "Allow privilege escalation"
+    category: "Container Security"
+    type: misconfiguration
+    default_severity: HIGH
+    status: active
+    description: "allowPrivilegeEscalation=true — процесс эрхээ өсгөх боломжтой."
+    remediation: "securityContext.allowPrivilegeEscalation=false."
+    references: ["CIS-5.2.5"]
+    mappings:
+      trivy:     ["AVD-KSV0001"]
+      kubescape: ["C-0016"]
+      checkov:   ["CKV_K8S_20"]
+      popeye:    []
+
+  - id: TATAR-CON-004
+    title: "Dangerous capabilities added"
+    category: "Container Security"
+    type: misconfiguration
+    default_severity: HIGH
+    status: active
+    description: "SYS_ADMIN, NET_ADMIN зэрэг аюултай Linux capability нэмэгдсэн."
+    remediation: "Шаардлагагүй capability-г drop хийнэ; ALL-ыг drop эхлэлээ."
+    references: ["CIS-5.2.9", "MITRE-T1610"]
+    mappings:
+      trivy:     ["AVD-KSV0004"]
+      kubescape: ["C-0046"]
+      checkov:   ["CKV_K8S_25"]
+      popeye:    []
+
+  - id: TATAR-CON-005
+    title: "Host PID namespace shared"
+    category: "Container Security"
+    type: misconfiguration
+    default_severity: HIGH
+    status: active
+    description: "hostPID=true — host-ийн процессын namespace ил гарсан."
+    remediation: "hostPID=false."
+    references: ["CIS-5.2.2"]
+    mappings:
+      trivy:     ["AVD-KSV0010"]
+      kubescape: ["C-0038"]
+      checkov:   ["CKV_K8S_17"]
+      popeye:    []
+
+  - id: TATAR-CON-006
+    title: "Host network enabled"
+    category: "Container Security"
+    type: misconfiguration
+    default_severity: HIGH
+    status: active
+    description: "hostNetwork=true — сүлжээний тусгаарлалтыг тойрч гарна."
+    remediation: "hostNetwork=false."
+    references: ["CIS-5.2.4"]
+    mappings:
+      trivy:     ["AVD-KSV0009"]
+      kubescape: ["C-0041"]
+      checkov:   ["CKV_K8S_19"]
+      popeye:    []
+
+  - id: TATAR-CON-007
+    title: "Host filesystem mounted (hostPath)"
+    category: "Container Security"
+    type: misconfiguration
+    default_severity: HIGH
+    status: active
+    description: "hostPath volume mount — host файлын системд хандах эрсдэл."
+    remediation: "hostPath ашиглахаас зайлсхийх; шаардвал readOnly."
+    references: ["CIS-5.2.12"]
+    mappings:
+      trivy:     ["AVD-KSV0023"]
+      kubescape: ["C-0045"]
+      checkov:   ["CKV_K8S_27"]
+      popeye:    []
+
+  - id: TATAR-CON-008
+    title: "Missing securityContext"
+    category: "Container Security"
+    type: misconfiguration
+    default_severity: MEDIUM
+    status: active
+    description: "Container/Pod securityContext тодорхойлоогүй."
+    remediation: "securityContext блок нэмж hardening тохируулна."
+    references: ["CIS-5.7.3"]
+    mappings:
+      trivy:     []
+      kubescape: ["C-0211"]
+      checkov:   []
+      popeye:    []
+
+  - id: TATAR-CON-009
+    title: "Read-only root filesystem disabled"
+    category: "Container Security"
+    type: misconfiguration
+    default_severity: MEDIUM
+    status: active
+    description: "readOnlyRootFilesystem=false — filesystem бичигдэх боломжтой."
+    remediation: "securityContext.readOnlyRootFilesystem=true."
+    references: ["CIS-5.2.11"]
+    mappings:
+      trivy:     ["AVD-KSV0014"]
+      kubescape: ["C-0017"]
+      checkov:   ["CKV_K8S_22"]
+      popeye:    []
+
+  - id: TATAR-CON-010
+    title: "Missing CPU/memory limits"
+    category: "Container Security"
+    type: misconfiguration
+    default_severity: LOW
+    status: active
+    description: "resources.limits тодорхойлоогүй — noisy-neighbor/DoS эрсдэл."
+    remediation: "resources.limits.cpu болон .memory тохируулна."
+    references: ["CIS-5.7.2"]
+    mappings:
+      trivy:     ["AVD-KSV0011", "AVD-KSV0015"]
+      kubescape: ["C-0009"]
+      checkov:   ["CKV_K8S_10", "CKV_K8S_11"]
+      popeye:    ["POP-108"]
+
+  - id: TATAR-CON-011
+    title: "Default seccomp profile not set"
+    category: "Container Security"
+    type: misconfiguration
+    default_severity: MEDIUM
+    status: active
+    description: "seccompProfile тохируулаагүй — syscall хязгаарлалт байхгүй."
+    remediation: "seccompProfile.type=RuntimeDefault."
+    references: ["CIS-5.7.2"]
+    mappings:
+      trivy:     ["AVD-KSV0030"]
+      kubescape: ["C-0210"]
+      checkov:   ["CKV_K8S_31"]
+      popeye:    []
+
+  # ===================== RBAC & Authorization (RBAC) =====================
+  - id: TATAR-RBAC-001
+    title: "cluster-admin binding overuse"
+    category: "RBAC & Authorization"
+    type: rbac
+    default_severity: CRITICAL
+    status: active
+    description: "Subject-д cluster-admin эрх шууд олгогдсон."
+    remediation: "cluster-admin-ийг хязгаарлаж, тодорхой scoped role ашиглана."
+    references: ["CIS-5.1.1", "MITRE-T1078"]
+    mappings:
+      trivy:     []
+      kubescape: ["C-0035"]
+      checkov:   []
+      popeye:    []
+
+  - id: TATAR-RBAC-002
+    title: "Wildcard permissions in role"
+    category: "RBAC & Authorization"
+    type: rbac
+    default_severity: HIGH
+    status: active
+    description: "Role-д * (resources/verbs) wildcard эрх байна."
+    remediation: "Эрхийг тодорхой resource/verb болгож нарийсгана."
+    references: ["CIS-5.1.3"]
+    mappings:
+      trivy:     []
+      kubescape: ["C-0272"]
+      checkov:   ["CKV_K8S_49"]
+      popeye:    []
+
+  - id: TATAR-RBAC-003
+    title: "Excessive / risky permissions"
+    category: "RBAC & Authorization"
+    type: rbac
+    default_severity: HIGH
+    status: active
+    heuristic: true   # контекст шаарддаг — single-scanner бол confidence MEDIUM/LOW
+    description: "secrets get, pods/exec, escalate/bind зэрэг эрсдэлтэй эрх."
+    remediation: "Least-privilege зарчмаар эрхийг цэвэрлэнэ."
+    references: ["CIS-5.1.2"]
+    mappings:
+      trivy:     []
+      kubescape: ["C-0015", "C-0031"]
+      checkov:   []
+      popeye:    []
+
+  - id: TATAR-RBAC-004
+    title: "Anonymous / unauthenticated access"
+    category: "RBAC & Authorization"
+    type: rbac
+    default_severity: HIGH
+    status: active
+    description: "system:anonymous эсвэл system:unauthenticated-д эрх олгогдсон."
+    remediation: "Anonymous binding-уудыг устгана."
+    references: ["CIS-5.1.5"]
+    mappings:
+      trivy:     []
+      kubescape: ["C-0262"]
+      checkov:   []
+      popeye:    []
+
+  - id: TATAR-RBAC-005
+    title: "Default service account in use"
+    category: "RBAC & Authorization"
+    type: rbac
+    default_severity: MEDIUM
+    status: active
+    description: "default service account ашиглагдаж байна (тусгай SA байх ёстой)."
+    remediation: "Workload бүрт тусгай, least-privilege SA үүсгэнэ."
+    references: ["CIS-5.1.5"]
+    # NOTE: automount-token rule-ууд (AVD-KSV0036, C-0034, CKV_K8S_38) нь
+    # SEC-003-д харьяалагдана — давхардлыг арилгав.
+    mappings:
+      trivy:     []
+      kubescape: ["C-0187"]
+      checkov:   []
+      popeye:    ["POP-303"]
+
+  # ===================== Network Security (NET) =====================
+  - id: TATAR-NET-001
+    title: "Missing NetworkPolicy"
+    category: "Network Security"
+    type: network
+    default_severity: MEDIUM
+    status: active
+    description: "Namespace-д NetworkPolicy тодорхойлоогүй — pod хоорондын урсгал нээлттэй."
+    remediation: "Namespace бүрт NetworkPolicy тодорхойлно."
+    references: ["CIS-5.3.2"]
+    mappings:
+      trivy:     ["AVD-KSV0038"]
+      kubescape: ["C-0260"]
+      checkov:   []
+      popeye:    ["POP-1500"]
+
+  - id: TATAR-NET-002
+    title: "No default-deny NetworkPolicy"
+    category: "Network Security"
+    type: network
+    default_severity: HIGH
+    status: active
+    description: "default-deny ingress/egress бодлого байхгүй."
+    remediation: "default-deny NetworkPolicy нэмнэ."
+    references: ["CIS-5.3.2"]
+    mappings:
+      trivy:     []
+      kubescape: ["C-0260"]
+      checkov:   []
+      popeye:    []
+
+  - id: TATAR-NET-003
+    title: "Service exposed externally"
+    category: "Network Security"
+    type: network
+    default_severity: MEDIUM
+    status: active
+    heuristic: true   # ил гарсан эсэх нь контекстээс хамаарна
+    description: "LoadBalancer/NodePort service гадагш ил гарсан."
+    remediation: "Ил гаргалтыг шаардлагатайгаар хязгаарлаж, ingress бодлого нэмнэ."
+    references: []
+    mappings:
+      trivy:     []
+      kubescape: ["C-0256"]
+      checkov:   []
+      popeye:    ["POP-1100"]
+
+  - id: TATAR-NET-004
+    title: "Ingress without TLS"
+    category: "Network Security"
+    type: network
+    default_severity: HIGH
+    status: active
+    description: "Ingress HTTPS-ийн оронд HTTP ашиглаж байна."
+    remediation: "Ingress-д TLS тохируулна."
+    references: []
+    # NOTE: MVP stack-д энэ control-ыг шууд барих тогтвортой rule алга
+    # (өмнөх CKV_K8S_20 нь allowPrivilegeEscalation — буруу байсан, хассан).
+    # v1.1-д Ingress TLS шалгах custom rule эсвэл kubescape control нэмнэ.
+    mappings:
+      trivy:     []
+      kubescape: []
+      checkov:   []
+      popeye:    []
+
+  # ===================== Image Security (IMG) =====================
+  - id: TATAR-IMG-001
+    title: "Critical CVE in container image"
+    category: "Image Security"
+    type: vulnerability
+    default_severity: CRITICAL
+    status: active
+    description: "Container image-д мэдэгдэж буй CRITICAL CVE илэрсэн."
+    remediation: "Base image/багцыг шинэчилж эсвэл patch хийнэ."
+    references: []
+    mappings:
+      trivy:     ["CVE-*"]
+      kubescape: ["C-0078"]
+      checkov:   []
+      popeye:    []
+
+  - id: TATAR-IMG-002
+    title: "High CVE in container image"
+    category: "Image Security"
+    type: vulnerability
+    default_severity: HIGH
+    status: active
+    description: "Container image-д мэдэгдэж буй HIGH CVE илэрсэн."
+    remediation: "Base image/багцыг шинэчилнэ."
+    references: []
+    mappings:
+      trivy:     ["CVE-*"]
+      kubescape: ["C-0078"]
+      checkov:   []
+      popeye:    []
+
+  - id: TATAR-IMG-003
+    title: "Image uses :latest tag"
+    category: "Image Security"
+    type: misconfiguration
+    default_severity: MEDIUM
+    status: active
+    description: "Image :latest tag ашиглаж байна — давтагдашгүй deploy."
+    remediation: "Тодорхой хувилбар (digest/tag) ашиглана."
+    references: ["CIS-5.7.4"]
+    mappings:
+      trivy:     ["AVD-KSV0013"]
+      kubescape: ["C-0075"]
+      checkov:   ["CKV_K8S_43"]
+      popeye:    ["POP-105"]
+
+  - id: TATAR-IMG-004
+    title: "Image from unapproved registry"
+    category: "Image Security"
+    type: misconfiguration
+    default_severity: MEDIUM
+    status: active
+    description: "Зөвшөөрөгдөөгүй registry-ээс image татагдсан."
+    remediation: "Зөвхөн зөвшөөрөгдсөн registry ашиглана."
+    references: []
+    # NOTE: CKV_K8S_22 (readonly root fs) хассан — тэр нь CON-009-д харьяалагдана.
+    mappings:
+      trivy:     []
+      kubescape: ["C-0079"]
+      checkov:   []
+      popeye:    []
+
+  # ===================== Secret Management (SEC) =====================
+  - id: TATAR-SEC-001
+    title: "Secret exposed in environment variable"
+    category: "Secret Management"
+    type: secret
+    default_severity: HIGH
+    status: active
+    description: "Нууц утга env хувьсагчаар шууд ил гарсан."
+    remediation: "Kubernetes Secret + volume mount ашиглана."
+    references: ["CIS-5.4.1"]
+    mappings:
+      trivy:     ["secret"]
+      kubescape: ["C-0012"]
+      checkov:   ["CKV_K8S_35"]
+      popeye:    []
+
+  - id: TATAR-SEC-002
+    title: "Hardcoded secret in image/manifest"
+    category: "Secret Management"
+    type: secret
+    default_severity: HIGH
+    status: active
+    description: "Image эсвэл manifest дотор secret шууд бичигдсэн."
+    remediation: "Secret-ийг кодоос салгаж secret store руу шилжүүлнэ."
+    references: []
+    mappings:
+      trivy:     ["secret"]
+      kubescape: []
+      checkov:   []
+      popeye:    []
+
+  - id: TATAR-SEC-003
+    title: "Service account token auto-mounted"
+    category: "Secret Management"
+    type: secret
+    default_severity: MEDIUM
+    status: active
+    description: "automountServiceAccountToken=true — шаардлагагүй token ил."
+    remediation: "automountServiceAccountToken=false."
+    references: ["CIS-5.1.6"]
+    mappings:
+      trivy:     ["AVD-KSV0036"]
+      kubescape: ["C-0034"]
+      checkov:   ["CKV_K8S_38"]
+      popeye:    []
+
+  - id: TATAR-SEC-004
+    title: "Sensitive data in ConfigMap"
+    category: "Secret Management"
+    type: secret
+    default_severity: MEDIUM
+    status: active
+    description: "ConfigMap-д нууц өгөгдөл хадгалагдсан (Secret байх ёстой)."
+    remediation: "Нууц өгөгдлийг Secret руу шилжүүлнэ."
+    references: []
+    mappings:
+      trivy:     ["secret"]
+      kubescape: []
+      checkov:   []
+      popeye:    []
+
+  # ===================== Operational Health (OPS) =====================
+  - id: TATAR-OPS-001
+    title: "Missing readiness probe"
+    category: "Operational Health"
+    type: hygiene
+    default_severity: LOW
+    status: active
+    description: "readinessProbe тодорхойлоогүй."
+    remediation: "readinessProbe нэмнэ."
+    references: []
+    mappings:
+      trivy:     []
+      kubescape: ["C-0018"]
+      checkov:   ["CKV_K8S_8"]
+      popeye:    ["POP-102"]
+
+  - id: TATAR-OPS-002
+    title: "Missing liveness probe"
+    category: "Operational Health"
+    type: hygiene
+    default_severity: LOW
+    status: active
+    description: "livenessProbe тодорхойлоогүй."
+    remediation: "livenessProbe нэмнэ."
+    references: []
+    mappings:
+      trivy:     []
+      kubescape: ["C-0018"]
+      checkov:   ["CKV_K8S_9"]
+      popeye:    ["POP-103"]
+
+  - id: TATAR-OPS-003
+    title: "Orphan / dead service (no endpoints)"
+    category: "Operational Health"
+    type: hygiene
+    default_severity: INFO
+    status: active
+    description: "Service-д тохирох endpoint байхгүй."
+    remediation: "Service-ийг устгах эсвэл selector-ыг засна."
+    references: []
+    mappings:
+      trivy:     []
+      kubescape: []
+      checkov:   []
+      popeye:    ["POP-1102"]
+
+  - id: TATAR-OPS-004
+    title: "Unused ConfigMap / Secret"
+    category: "Operational Health"
+    type: hygiene
+    default_severity: INFO
+    status: active
+    description: "Ашиглагдаагүй ConfigMap эсвэл Secret."
+    remediation: "Ашиглагдаагүй объектыг устгана."
+    references: []
+    mappings:
+      trivy:     []
+      kubescape: []
+      checkov:   []
+      popeye:    ["POP-400", "POP-401"]
+
+  - id: TATAR-OPS-005
+    title: "imagePullPolicy not set correctly"
+    category: "Operational Health"
+    type: hygiene
+    default_severity: LOW
+    status: active
+    description: "imagePullPolicy тохируулаагүй эсвэл буруу."
+    remediation: "imagePullPolicy-г IfNotPresent/Always болгож тодорхой заана."
+    references: []
+    mappings:
+      trivy:     []
+      kubescape: []
+      checkov:   ["CKV_K8S_15"]
+      popeye:    ["POP-106"]

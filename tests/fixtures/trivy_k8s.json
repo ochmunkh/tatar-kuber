@@ -1,0 +1,93 @@
+{
+  "SchemaVersion": 2,
+  "ArtifactName": "cluster",
+  "ArtifactType": "kubernetes",
+  "Resources": [
+    {
+      "Namespace": "production",
+      "Kind": "Deployment",
+      "Name": "api",
+      "Results": [
+        {
+          "Target": "Deployment/api",
+          "Class": "config",
+          "Type": "kubernetes",
+          "Misconfigurations": [
+            {
+              "Type": "Kubernetes Security Check",
+              "ID": "KSV017",
+              "AVDID": "AVD-KSV0017",
+              "Title": "Privileged container",
+              "Description": "Container running in privileged mode.",
+              "Severity": "HIGH",
+              "Resolution": "Do not set securityContext.privileged to true.",
+              "References": ["https://avd.aquasec.com/misconfig/ksv017"]
+            },
+            {
+              "Type": "Kubernetes Security Check",
+              "ID": "KSV012",
+              "AVDID": "AVD-KSV0012",
+              "Title": "Runs as root user",
+              "Description": "Container runs as root.",
+              "Severity": "MEDIUM",
+              "Resolution": "Set runAsNonRoot to true.",
+              "References": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Namespace": "production",
+      "Kind": "Deployment",
+      "Name": "api",
+      "Results": [
+        {
+          "Target": "registry.local/api:1.2.3 (alpine 3.18)",
+          "Class": "os-pkgs",
+          "Type": "alpine",
+          "Vulnerabilities": [
+            {
+              "VulnerabilityID": "CVE-2024-0001",
+              "PkgName": "openssl",
+              "InstalledVersion": "3.1.0",
+              "FixedVersion": "3.1.4",
+              "Severity": "CRITICAL",
+              "Title": "openssl critical flaw",
+              "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-0001"
+            },
+            {
+              "VulnerabilityID": "CVE-2024-0002",
+              "PkgName": "libcurl",
+              "InstalledVersion": "8.1.0",
+              "FixedVersion": "8.1.2",
+              "Severity": "HIGH",
+              "Title": "libcurl high flaw",
+              "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-0002"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Namespace": "default",
+      "Kind": "Pod",
+      "Name": "worker",
+      "Results": [
+        {
+          "Target": "Pod/worker",
+          "Class": "secret",
+          "Secrets": [
+            {
+              "RuleID": "aws-access-key-id",
+              "Category": "AWS",
+              "Severity": "HIGH",
+              "Title": "AWS Access Key ID",
+              "Match": "env: AWS_ACCESS_KEY_ID=AKIA********"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
