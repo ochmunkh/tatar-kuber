@@ -44,6 +44,7 @@ const dashboard = `<!DOCTYPE html>
  .bC{background:#b3123b}.bH{background:#d9480f}.bM{background:#b8860b}.bL{background:#2b7a3b}.bI{background:#888}
  .bs{background:#6b46c1;color:#fff;padding:1px 6px;border-radius:8px;font-size:10px}
  .fb{color:#555;font-size:12px}
+ .fix{color:#1F6F54;font-size:12px}
 </style>
 </head>
 <body>
@@ -62,7 +63,7 @@ const dashboard = `<!DOCTYPE html>
   <div class="card"><div class="n">{{.Summary.BlindShot}}</div><div class="l">Blind Shot</div></div>
  </div>
  <table>
-  <thead><tr><th>Severity</th><th>Control</th><th>Resource</th><th>Title</th><th>Found by</th><th>Conf.</th></tr></thead>
+  <thead><tr><th>Severity</th><th>Control</th><th>Resource</th><th>Title</th><th>Засвар (Fix)</th><th>Found by</th><th>Conf.</th></tr></thead>
   <tbody>
   {{range .Findings}}
    <tr>
@@ -70,6 +71,7 @@ const dashboard = `<!DOCTYPE html>
     <td>{{.CanonicalControl}}<br><span class="fb">{{.Category}}</span></td>
     <td>{{if .Namespace}}{{.Namespace}}/{{end}}{{.Resource}}</td>
     <td>{{.Title}}{{if .BlindShot}}<br><span class="fb">{{.BlindShotReason}}</span>{{end}}</td>
+    <td class="fix">{{.Remediation}}</td>
     <td class="fb">{{range $i,$s := .FoundBy}}{{if $i}}, {{end}}{{$s}}{{end}}</td>
     <td class="fb">{{.Confidence}}</td>
    </tr>
