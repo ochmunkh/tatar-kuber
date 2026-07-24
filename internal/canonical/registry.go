@@ -9,6 +9,25 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+// I18n — олон хэлт текст (ж: {en: "...", mn: "..."}).
+type I18n map[string]string
+
+// Get — тухайн хэл дээрх текст. Байхгүй бол en -> аль нэг руу fallback.
+func (i I18n) Get(lang string) string {
+	if v := i[lang]; v != "" {
+		return v
+	}
+	if v := i["en"]; v != "" {
+		return v
+	}
+	for _, v := range i {
+		if v != "" {
+			return v
+		}
+	}
+	return ""
+}
+
 // BlindShotRule — контекстээр severity downgrade хийх дүрэм (устгахгүй).
 type BlindShotRule struct {
 	Namespace     string `yaml:"namespace"`
@@ -20,13 +39,13 @@ type BlindShotRule struct {
 // Control — нэг canonical control.
 type Control struct {
 	ID              string              `yaml:"id"`
-	Title           string              `yaml:"title"`
+	Title           I18n                `yaml:"title"`
 	Category        string              `yaml:"category"`
 	Type            string              `yaml:"type"`
 	DefaultSeverity string              `yaml:"default_severity"`
 	Status          string              `yaml:"status"` // active | deprecated
 	Description     string              `yaml:"description"`
-	Remediation     string              `yaml:"remediation"`
+	Remediation     I18n                `yaml:"remediation"`
 	References      []string            `yaml:"references"`
 	Mappings        map[string][]string `yaml:"mappings"` // scanner -> rule IDs
 	BlindShotRules  []BlindShotRule     `yaml:"blind_shot_rules"`

@@ -21,6 +21,7 @@ func cmdScan(args []string) int {
 	cluster := fs.String("cluster", "cluster", "cluster/target нэр (тайланд)")
 	outDir := fs.String("o", ".", "гаралтын хавтас")
 	registry := fs.String("registry", "", "canonical-controls.yaml зам")
+	lang := fs.String("lang", "en", "тайлангийн хэл: en | mn")
 	_ = fs.Parse(args)
 
 	regPath, err := resolveRegistry(*registry)
@@ -46,7 +47,7 @@ func cmdScan(args []string) int {
 			fmt.Fprintln(os.Stderr, "алдаа:", err)
 			return 2
 		}
-		r, err := p.Process(raws, orchestrator.Meta{ClusterName: *cluster, ScanMode: mode, Inventory: inv})
+		r, err := p.Process(raws, orchestrator.Meta{ClusterName: *cluster, ScanMode: mode, Lang: *lang, Inventory: inv})
 		if err != nil {
 			fmt.Fprintln(os.Stderr, "алдаа:", err)
 			return 2
@@ -65,7 +66,7 @@ func cmdScan(args []string) int {
 		Kubeconfig: *kubeconfig,
 		Context:    *context_,
 	}
-	r, err := p.Run(context.Background(), target, orchestrator.Meta{ClusterName: *cluster, ScanMode: mode})
+	r, err := p.Run(context.Background(), target, orchestrator.Meta{ClusterName: *cluster, ScanMode: mode, Lang: *lang})
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "алдаа:", err)
 		return 2

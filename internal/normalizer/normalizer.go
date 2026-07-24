@@ -34,13 +34,12 @@ func Build(rs *canonical.Resolver, scanner, ruleID string, ctx canonical.Resolve
 	if sev == "" {
 		sev = finding.Severity(ctrl.DefaultSeverity)
 	}
+	// Анхдагч хэл нь en (canonical). Orchestrator сонгосон --lang-аар дарж бичнэ.
 	title := m.Title
 	if title == "" {
-		title = ctrl.Title
+		title = ctrl.Title.Get("en")
 	}
-	// Засварыг canonical registry-ээс (curated монгол текст) эхэнд авна;
-	// байхгүй бол scanner-ийн өгсөн текст рүү шилжинэ.
-	rem := ctrl.Remediation
+	rem := ctrl.Remediation.Get("en")
 	if rem == "" {
 		rem = m.Remediation
 	}

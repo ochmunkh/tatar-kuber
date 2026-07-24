@@ -35,6 +35,7 @@ func New(reg *canonical.Registry, adapters ...scanner.ScannerAdapter) *Pipeline 
 type Meta struct {
 	ClusterName string
 	ScanMode    string         // local | remote
+	Lang        string         // тайлангийн хэл: en (default) | mn
 	Inventory   map[string]int // cluster объектын тоо (сонголт)
 }
 
@@ -92,12 +93,19 @@ func (p *Pipeline) Process(raws []scanner.RawResult, m Meta) (finding.ScanResult
 	scored, score, band := risk.ApplyScores(shot)
 	sortBySeverity(scored) // Critical -> High -> Medium -> Low -> Info (тайланд эрэмбэ)
 
+	lang := m.Lang
+	if lang == "" {
+		lang = "en"
+	}
+	applyLang(scored, p.reg, lang) // title/remediation-ыг сонгосон хэлээр
+
 	res := finding.ScanResult{
 		SchemaVersion: "1.0",
 		Metadata: finding.Metadata{
 			ScanID:          randID(),
 			ClusterName:     m.ClusterName,
 			ScanMode:        m.ScanMode,
+			Lang:            lang,
 			TatarVersion:    tatarVersion,
 			ScannerVersions: versions,
 			StartedAt:       started.Format(time.RFC3339),
@@ -127,6 +135,23 @@ func sortBySeverity(fs []finding.Finding) {
 		}
 		return fs[i].ID < fs[j].ID
 	})
+}
+
+// applyLang — canonical registry-ийн сонгосон хэл дээрх title/remediation-аар
+// finding-үүдийг дарж бичнэ (scanner-ийн текстээс илүү curated, тогтвортой).
+func applyLang(fs []finding.Finding, reg *canonical.Registry, lang string) {
+	for i := range fs {
+		ctrl, ok := reg.Get(fs[i].CanonicalControl)
+		if !ok {
+			continue
+		}
+		if t := ctrl.Title.Get(lang); t != "" {
+			fs[i].Title = t
+		}
+		if r := ctrl.Remediation.Get(lang); r != "" {
+			fs[i].Remediation = r
+		}
+	}
 }
 
 func summarize(fs []finding.Finding, score int, band string) finding.Summary {
