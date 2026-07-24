@@ -2,6 +2,7 @@ package orchestrator
 
 import (
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/ochmunkh/tatar-kuber/internal/canonical"
@@ -49,6 +50,7 @@ func TestPipeline_EndToEnd(t *testing.T) {
 		FoundBy    []string
 		Confidence string
 		Severity   string
+		Evidence   string
 	}
 	for _, f := range res.Findings {
 		if f.CanonicalControl == "TATAR-CON-001" && f.Resource == "deployment/api" {
@@ -56,7 +58,8 @@ func TestPipeline_EndToEnd(t *testing.T) {
 				FoundBy    []string
 				Confidence string
 				Severity   string
-			}{f.FoundBy, string(f.Confidence), string(f.Severity)}
+				Evidence   string
+			}{f.FoundBy, string(f.Confidence), string(f.Severity), f.Evidence}
 		}
 	}
 	if priv == nil {
@@ -72,6 +75,10 @@ func TestPipeline_EndToEnd(t *testing.T) {
 	}
 	if priv.Confidence != "HIGH" {
 		t.Errorf("CON-001 confidence=%s, want HIGH (олон scanner)", priv.Confidence)
+	}
+	// dedup нь хамгийн дэлгэрэнгүй evidence-ийг (kubescape spec зам) сонгосон эсэх
+	if !strings.Contains(priv.Evidence, "securityContext.privileged") {
+		t.Errorf("CON-001 evidence=%q, spec зам агуулаагүй", priv.Evidence)
 	}
 
 	// summary + score

@@ -15,6 +15,7 @@ type Meta struct {
 	Namespace   string
 	Title       string
 	Description string
+	Evidence    string // асуудал яг хаана (spec зам / файл:мөр / утга)
 	Remediation string
 	Severity    string // scanner-ийн severity (хоосон бол canonical default)
 	References  []string
@@ -56,6 +57,7 @@ func Build(rs *canonical.Resolver, scanner, ruleID string, ctx canonical.Resolve
 		OriginalSeverity: sev,
 		Title:            title,
 		Description:      m.Description,
+		Evidence:         m.Evidence,
 		Remediation:      rem,
 		FoundBy:          []string{scanner},
 		Confidence:       risk.Confidence(1, ctrl.Heuristic),

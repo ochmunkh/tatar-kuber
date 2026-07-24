@@ -21,7 +21,8 @@
               "Description": "Container running in privileged mode.",
               "Severity": "HIGH",
               "Resolution": "Do not set securityContext.privileged to true.",
-              "References": ["https://avd.aquasec.com/misconfig/ksv017"]
+              "References": ["https://avd.aquasec.com/misconfig/ksv017"],
+              "CauseMetadata": { "Resource": "spec.template.spec.containers[0].securityContext.privileged", "StartLine": 34 }
             },
             {
               "Type": "Kubernetes Security Check",
@@ -31,7 +32,8 @@
               "Description": "Container runs as root.",
               "Severity": "MEDIUM",
               "Resolution": "Set runAsNonRoot to true.",
-              "References": []
+              "References": [],
+              "CauseMetadata": { "Resource": "spec.template.spec.containers[0].securityContext.runAsNonRoot", "StartLine": 30 }
             }
           ]
         }

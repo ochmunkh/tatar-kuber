@@ -12,7 +12,8 @@
           "resource": "Deployment.production.api",
           "guideline": "https://docs.bridgecrew.io/docs/privileged",
           "severity": null,
-          "file_path": "/deploy.yaml"
+          "file_path": "/deploy.yaml",
+          "file_line_range": [30, 36]
         },
         {
           "check_id": "CKV_K8S_20",

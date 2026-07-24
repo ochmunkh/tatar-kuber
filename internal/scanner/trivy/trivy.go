@@ -58,21 +58,26 @@ type trivyReport struct {
 			Target            string `json:"Target"`
 			Class             string `json:"Class"`
 			Misconfigurations []struct {
-				AVDID       string   `json:"AVDID"`
-				ID          string   `json:"ID"`
-				Title       string   `json:"Title"`
-				Description string   `json:"Description"`
-				Severity    string   `json:"Severity"`
-				Resolution  string   `json:"Resolution"`
-				References  []string `json:"References"`
+				AVDID         string   `json:"AVDID"`
+				ID            string   `json:"ID"`
+				Title         string   `json:"Title"`
+				Description   string   `json:"Description"`
+				Severity      string   `json:"Severity"`
+				Resolution    string   `json:"Resolution"`
+				References    []string `json:"References"`
+				CauseMetadata struct {
+					Resource  string `json:"Resource"`
+					StartLine int    `json:"StartLine"`
+				} `json:"CauseMetadata"`
 			} `json:"Misconfigurations"`
 			Vulnerabilities []struct {
-				VulnerabilityID string `json:"VulnerabilityID"`
-				PkgName         string `json:"PkgName"`
-				FixedVersion    string `json:"FixedVersion"`
-				Severity        string `json:"Severity"`
-				Title           string `json:"Title"`
-				PrimaryURL      string `json:"PrimaryURL"`
+				VulnerabilityID  string `json:"VulnerabilityID"`
+				PkgName          string `json:"PkgName"`
+				InstalledVersion string `json:"InstalledVersion"`
+				FixedVersion     string `json:"FixedVersion"`
+				Severity         string `json:"Severity"`
+				Title            string `json:"Title"`
+				PrimaryURL       string `json:"PrimaryURL"`
 			} `json:"Vulnerabilities"`
 			Secrets []struct {
 				RuleID   string `json:"RuleID"`
@@ -97,7 +102,11 @@ func (s *Scanner) Normalize(raw scanner.RawResult) ([]finding.Finding, error) {
 		for _, r := range res.Results {
 			for _, m := range r.Misconfigurations {
 				ctx := canonical.ResolverContext{ResourceKind: res.Kind, Namespace: res.Namespace, Severity: m.Severity}
-				meta := normalizer.Meta{Resource: resource, Namespace: res.Namespace, Title: m.Title, Description: m.Description, Remediation: m.Resolution, Severity: m.Severity, References: m.References}
+				ev := m.CauseMetadata.Resource
+				if ev == "" && m.CauseMetadata.StartLine > 0 {
+					ev = fmt.Sprintf("%s:%d", r.Target, m.CauseMetadata.StartLine)
+				}
+				meta := normalizer.Meta{Resource: resource, Namespace: res.Namespace, Title: m.Title, Description: m.Description, Evidence: ev, Remediation: m.Resolution, Severity: m.Severity, References: m.References}
 				if f, ok := normalizer.Build(s.resolver, "trivy", m.AVDID, ctx, meta, s.now); ok {
 					out = append(out, f)
 				}
@@ -108,7 +117,11 @@ func (s *Scanner) Normalize(raw scanner.RawResult) ([]finding.Finding, error) {
 				if v.FixedVersion != "" {
 					rem = fmt.Sprintf("%s-г %s руу шинэчилнэ", v.PkgName, v.FixedVersion)
 				}
-				meta := normalizer.Meta{Resource: resource, Namespace: res.Namespace, Title: v.VulnerabilityID + ": " + v.Title, Description: v.Title, Remediation: rem, Severity: v.Severity, References: refs(v.PrimaryURL, v.VulnerabilityID)}
+				ev := v.PkgName
+				if v.InstalledVersion != "" {
+					ev = v.PkgName + "@" + v.InstalledVersion
+				}
+				meta := normalizer.Meta{Resource: resource, Namespace: res.Namespace, Title: v.VulnerabilityID + ": " + v.Title, Description: v.Title, Evidence: ev, Remediation: rem, Severity: v.Severity, References: refs(v.PrimaryURL, v.VulnerabilityID)}
 				if f, ok := normalizer.Build(s.resolver, "trivy", "CVE-*", ctx, meta, s.now); ok {
 					out = append(out, f)
 				}
@@ -119,7 +132,7 @@ func (s *Scanner) Normalize(raw scanner.RawResult) ([]finding.Finding, error) {
 					detail = "image"
 				}
 				ctx := canonical.ResolverContext{ResourceKind: res.Kind, Namespace: res.Namespace, Severity: sec.Severity, Detail: detail}
-				meta := normalizer.Meta{Resource: resource, Namespace: res.Namespace, Title: sec.Title, Description: "Илэрсэн нууц: " + sec.Category, Remediation: "Нууцыг кодоос салгаж Secret store руу шилжүүлнэ", Severity: sec.Severity}
+				meta := normalizer.Meta{Resource: resource, Namespace: res.Namespace, Title: sec.Title, Description: "Илэрсэн нууц: " + sec.Category, Evidence: sec.Match, Remediation: "Нууцыг кодоос салгаж Secret store руу шилжүүлнэ", Severity: sec.Severity}
 				if f, ok := normalizer.Build(s.resolver, "trivy", "secret", ctx, meta, s.now); ok {
 					out = append(out, f)
 				}

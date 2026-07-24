@@ -43,11 +43,13 @@ type checkovBlock struct {
 	CheckType string `json:"check_type"`
 	Results   struct {
 		FailedChecks []struct {
-			CheckID   string `json:"check_id"`
-			CheckName string `json:"check_name"`
-			Resource  string `json:"resource"` // Kind.namespace.name эсвэл Kind.name
-			Guideline string `json:"guideline"`
-			Severity  string `json:"severity"`
+			CheckID       string `json:"check_id"`
+			CheckName     string `json:"check_name"`
+			Resource      string `json:"resource"` // Kind.namespace.name эсвэл Kind.name
+			Guideline     string `json:"guideline"`
+			Severity      string `json:"severity"`
+			FilePath      string `json:"file_path"`
+			FileLineRange []int  `json:"file_line_range"`
 		} `json:"failed_checks"`
 	} `json:"results"`
 }
@@ -74,7 +76,11 @@ func (s *Scanner) Normalize(raw scanner.RawResult) ([]finding.Finding, error) {
 			if fc.Guideline != "" {
 				refsList = []string{fc.Guideline}
 			}
-			meta := normalizer.Meta{Resource: resource, Namespace: ns, Title: fc.CheckName, Severity: fc.Severity, References: refsList}
+			ev := fc.FilePath
+			if len(fc.FileLineRange) == 2 {
+				ev = fmt.Sprintf("%s:%d-%d", fc.FilePath, fc.FileLineRange[0], fc.FileLineRange[1])
+			}
+			meta := normalizer.Meta{Resource: resource, Namespace: ns, Title: fc.CheckName, Evidence: ev, Severity: fc.Severity, References: refsList}
 			if f, ok := normalizer.Build(s.resolver, "checkov", fc.CheckID, ctx, meta, s.now); ok {
 				out = append(out, f)
 			}

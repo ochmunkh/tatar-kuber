@@ -48,6 +48,15 @@ type ksReport struct {
 			Status    struct {
 				Status string `json:"status"`
 			} `json:"status"`
+			Rules []struct {
+				Paths []struct {
+					FailedPath string `json:"failedPath"`
+					FixPath    struct {
+						Path  string `json:"path"`
+						Value string `json:"value"`
+					} `json:"fixPath"`
+				} `json:"paths"`
+			} `json:"rules"`
 		} `json:"controls"`
 	} `json:"results"`
 	Resources []struct {
@@ -82,8 +91,24 @@ func (s *Scanner) Normalize(raw scanner.RawResult) ([]finding.Finding, error) {
 			if c.Status.Status != "failed" {
 				continue // зөвхөн унасан control-ыг finding болгоно
 			}
+			ev := ""
+			for _, rule := range c.Rules {
+				for _, pth := range rule.Paths {
+					if pth.FixPath.Path != "" {
+						ev = pth.FixPath.Path
+					} else if pth.FailedPath != "" {
+						ev = pth.FailedPath
+					}
+					if ev != "" {
+						break
+					}
+				}
+				if ev != "" {
+					break
+				}
+			}
 			ctx := canonical.ResolverContext{ResourceKind: o.Kind, Namespace: o.NS}
-			meta := normalizer.Meta{Resource: resource, Namespace: o.NS, Title: c.Name}
+			meta := normalizer.Meta{Resource: resource, Namespace: o.NS, Title: c.Name, Evidence: ev}
 			if f, ok := normalizer.Build(s.resolver, "kubescape", c.ControlID, ctx, meta, s.now); ok {
 				out = append(out, f)
 			}

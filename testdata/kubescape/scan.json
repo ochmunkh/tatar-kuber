@@ -3,7 +3,8 @@
     {
       "resourceID": "apps/v1//production/Deployment/api",
       "controls": [
-        { "controlID": "C-0057", "name": "Privileged container", "status": { "status": "failed" } },
+        { "controlID": "C-0057", "name": "Privileged container", "status": { "status": "failed" },
+          "rules": [ { "paths": [ { "fixPath": { "path": "spec.template.spec.containers[0].securityContext.privileged", "value": "false" } } ] } ] },
         { "controlID": "C-0260", "name": "Ingress and Egress blocked", "status": { "status": "failed" } },
         { "controlID": "C-0013", "name": "Non-root containers", "status": { "status": "passed" } }
       ]

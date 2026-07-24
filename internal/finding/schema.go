@@ -64,6 +64,7 @@ type Finding struct {
 	OriginalSeverity Severity   `json:"original_severity,omitempty"`
 	Title            string     `json:"title"`
 	Description      string     `json:"description"`
+	Evidence         string     `json:"evidence,omitempty"` // асуудал яг хаана: spec зам / файл:мөр / утга
 	Remediation      string     `json:"remediation"`
 	FoundBy          []string   `json:"found_by"`
 	Confidence       Confidence `json:"confidence"`

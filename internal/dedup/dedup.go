@@ -55,6 +55,10 @@ func Deduplicate(findings []finding.Finding, reg *canonical.Registry) []finding.
 			if sevRank[f.OriginalSeverity] > sevRank[merged.OriginalSeverity] {
 				merged.OriginalSeverity = f.OriginalSeverity
 			}
+			// хамгийн дэлгэрэнгүй evidence-ийг сонгоно (ж: kubescape-ийн spec зам)
+			if len(f.Evidence) > len(merged.Evidence) {
+				merged.Evidence = f.Evidence
+			}
 			for _, s := range f.FoundBy {
 				foundBy[s] = true
 			}

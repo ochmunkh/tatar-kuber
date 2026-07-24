@@ -87,7 +87,8 @@ func (s *Scanner) Normalize(raw scanner.RawResult) ([]finding.Finding, error) {
 				}
 				code := m[1]
 				ctx := canonical.ResolverContext{ResourceKind: kind, Namespace: ns, Severity: levelSeverity(iss.Level)}
-				meta := normalizer.Meta{Resource: resource, Namespace: ns, Title: strings.TrimSpace(popCode.ReplaceAllString(iss.Message, "")), Severity: levelSeverity(iss.Level)}
+				evidence := strings.TrimSpace(popCode.ReplaceAllString(iss.Message, ""))
+				meta := normalizer.Meta{Resource: resource, Namespace: ns, Evidence: evidence, Severity: levelSeverity(iss.Level)}
 				if f, ok := normalizer.Build(s.resolver, "popeye", code, ctx, meta, s.now); ok {
 					out = append(out, f)
 				}
