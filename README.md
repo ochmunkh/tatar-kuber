@@ -4,14 +4,26 @@
 Нэг команд, олон scanner, нэг стандарт тайлан.
 
 > Агент суулгалгүйгээр (Mode B) эсвэл локал manifest дээр (Mode A) Kubernetes
-> орчны аюулгүй байдлыг шалгаж, олон scanner-ийн үр дүнг нэг стандарт
-> (Unified Finding Schema) руу нэгтгэн, инженер / auditor / CISO ойлгох
+> орчны аюулгүй байдлыг шалгаж, **Trivy · Kubescape · Checkov · Popeye**-ийн
+> үр дүнг нэг canonical стандарт руу нэгтгэн, инженер / auditor / CISO ойлгох
 > нэг тайлан гаргана.
+
+**Author:** Enkhbat.O — Security analyst
 
 ```bash
 tatar-kuber scan --kubeconfig ~/.kube/config
 tatar-kuber report -o html --open
 ```
+
+## Report — one issue, every scanner, both languages
+
+The same finding rendered in **English** and **Mongolian** (`--lang en|mn`). Note
+`found_by = checkov · kubescape · trivy` on the privileged container → the unified,
+de-duplicated view with confidence, evidence and remediation.
+
+| English | Монгол |
+|---|---|
+| ![TATAR-Kuber report (English)](docs/img/report-en.jpg) | ![TATAR-Kuber тайлан (Монгол)](docs/img/report-mn.jpg) |
 
 ## Design Principles
 
