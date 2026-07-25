@@ -11,9 +11,11 @@ import (
 
 // expectedSpec — expected-findings.json бүтэц (lab regression).
 type expectedSpec struct {
-	Scenario    string   `json:"scenario"`
-	MinFindings int      `json:"min_findings"`
-	Controls    []string `json:"controls"`
+	Scenario    string         `json:"scenario"`
+	MinFindings int            `json:"min_findings"`         // зөөлөн доод хязгаар (сонголт)
+	Total       *int           `json:"total,omitempty"`      // яг нийт тоо (сонголт)
+	Counts      map[string]int `json:"counts,omitempty"`     // severity бүрээр яг тоо (сонголт)
+	Controls    []string       `json:"controls"`
 }
 
 // cmdVerifyLab — scan-result.json-ыг expected-findings.json-той тулгана.
@@ -57,20 +59,36 @@ func cmdVerifyLab(args []string) int {
 	}
 
 	fmt.Printf("verify-lab: %s\n", exp.Scenario)
-	fmt.Printf("  expected controls: %d, min findings: %d\n", len(exp.Controls), exp.MinFindings)
-	fmt.Printf("  actual findings:   %d\n", res.Summary.TotalFindings)
+	fmt.Printf("  controls: expected %d, missing %d\n", len(exp.Controls), len(missing))
+	fmt.Printf("  findings: actual %d\n", res.Summary.TotalFindings)
 
 	fail := false
 	if len(missing) > 0 {
 		fail = true
-		fmt.Printf("  MISSING controls (%d):\n", len(missing))
+		fmt.Printf("  MISSING controls:\n")
 		for _, m := range missing {
 			fmt.Printf("    - %s\n", m)
 		}
 	}
-	if res.Summary.TotalFindings < exp.MinFindings {
+	if exp.Total != nil && res.Summary.TotalFindings != *exp.Total {
+		fail = true
+		fmt.Printf("  total findings: expected %d, actual %d\n", *exp.Total, res.Summary.TotalFindings)
+	}
+	if exp.MinFindings > 0 && res.Summary.TotalFindings < exp.MinFindings {
 		fail = true
 		fmt.Printf("  findings %d < expected min %d\n", res.Summary.TotalFindings, exp.MinFindings)
+	}
+	for _, sev := range []string{"CRITICAL", "HIGH", "MEDIUM", "LOW", "INFO"} {
+		want, ok := exp.Counts[sev]
+		if !ok {
+			continue
+		}
+		act := res.Summary.Counts[finding.Severity(sev)]
+		mark := "ok"
+		if act != want {
+			mark, fail = "MISMATCH", true
+		}
+		fmt.Printf("  %-8s expected %d, actual %d  [%s]\n", sev, want, act, mark)
 	}
 
 	if fail {
