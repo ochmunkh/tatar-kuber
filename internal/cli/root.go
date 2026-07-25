@@ -18,6 +18,7 @@ const usage = `TATAR-Kuber — Kubernetes security posture assessment framework
 Commands:
   scan      Cluster/manifest шалгах эсвэл цуглуулсан raw-г нэгтгэж scan-result.json үүсгэнэ
   report    scan-result.json-оос тайлан (json|sarif|html) үүсгэнэ
+  verify-lab expected-findings.json-той тулгаж regression шалгана
   update    Scanner binary-уудыг татаж, баталгаажуулж шинэчилнэ
   version   Хувилбар харуулна
 
@@ -37,6 +38,8 @@ func Execute() int {
 		return cmdScan(os.Args[2:])
 	case "report":
 		return cmdReport(os.Args[2:])
+	case "verify-lab":
+		return cmdVerifyLab(os.Args[2:])
 	case "update":
 		fmt.Println("update: not implemented (download -> verify checksum/cosign -> tools.lock.yaml)")
 		return 2

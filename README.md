@@ -114,3 +114,13 @@ risk оноо тооцож, JSON/SARIF/HTML тайлан гаргана.
 - ✅ Reports: JSON · SARIF 2.1.0 · HTML dashboard
 - ✅ CLI: scan (offline ingest ажиллана) · report · version
 - ⏳ Live scan (scanner binary дуудлага), update (cosign verify), remote client-go — дараагийн үе
+
+## Test lab
+
+Vulnerable/hardened manifests + regression harness live in a separate repo:
+**[tatar-kuber-lab](https://github.com/ochmunkh/tatar-kuber-lab)**.
+
+```bash
+tatar-kuber scan --raw-dir <lab>/raw -o out
+tatar-kuber verify-lab --input out/scan-result.json --expected <lab>/expected-findings.json
+```

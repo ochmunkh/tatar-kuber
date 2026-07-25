@@ -1,0 +1,1293 @@
+[
+ {
+  "check_type": "kubernetes",
+  "results": {
+   "failed_checks": [
+    {
+     "check_id": "CKV_K8S_8",
+     "check_name": "Liveness Probe Should be Configured",
+     "resource": "Deployment.production.host-ns-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/host-namespaces.yaml",
+     "file_line_range": [
+      2,
+      19
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_9",
+     "check_name": "Readiness Probe Should be Configured",
+     "resource": "Deployment.production.host-ns-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/host-namespaces.yaml",
+     "file_line_range": [
+      2,
+      19
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_13",
+     "check_name": "Memory limits should be set",
+     "resource": "Deployment.production.host-ns-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/host-namespaces.yaml",
+     "file_line_range": [
+      2,
+      19
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_12",
+     "check_name": "Memory requests should be set",
+     "resource": "Deployment.production.host-ns-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/host-namespaces.yaml",
+     "file_line_range": [
+      2,
+      19
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_11",
+     "check_name": "CPU limits should be set",
+     "resource": "Deployment.production.host-ns-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/host-namespaces.yaml",
+     "file_line_range": [
+      2,
+      19
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_22",
+     "check_name": "Use read-only filesystem for containers where possible",
+     "resource": "Deployment.production.host-ns-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/host-namespaces.yaml",
+     "file_line_range": [
+      2,
+      19
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_17",
+     "check_name": "Containers should not share the host process ID namespace",
+     "resource": "Deployment.production.host-ns-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/host-namespaces.yaml",
+     "file_line_range": [
+      2,
+      19
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_28",
+     "check_name": "Minimize the admission of containers with the NET_RAW capability",
+     "resource": "Deployment.production.host-ns-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/host-namespaces.yaml",
+     "file_line_range": [
+      2,
+      19
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_20",
+     "check_name": "Containers should not run with allowPrivilegeEscalation",
+     "resource": "Deployment.production.host-ns-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/host-namespaces.yaml",
+     "file_line_range": [
+      2,
+      19
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_43",
+     "check_name": "Image should use digest",
+     "resource": "Deployment.production.host-ns-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/host-namespaces.yaml",
+     "file_line_range": [
+      2,
+      19
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_30",
+     "check_name": "Apply security context to your containers",
+     "resource": "Deployment.production.host-ns-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/host-namespaces.yaml",
+     "file_line_range": [
+      2,
+      19
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_37",
+     "check_name": "Minimize the admission of containers with capabilities assigned",
+     "resource": "Deployment.production.host-ns-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/host-namespaces.yaml",
+     "file_line_range": [
+      2,
+      19
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_15",
+     "check_name": "Image Pull Policy should be Always",
+     "resource": "Deployment.production.host-ns-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/host-namespaces.yaml",
+     "file_line_range": [
+      2,
+      19
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_19",
+     "check_name": "Containers should not share the host network namespace",
+     "resource": "Deployment.production.host-ns-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/host-namespaces.yaml",
+     "file_line_range": [
+      2,
+      19
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_29",
+     "check_name": "Apply security context to your pods and containers",
+     "resource": "Deployment.production.host-ns-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/host-namespaces.yaml",
+     "file_line_range": [
+      2,
+      19
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_23",
+     "check_name": "Minimize the admission of root containers",
+     "resource": "Deployment.production.host-ns-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/host-namespaces.yaml",
+     "file_line_range": [
+      2,
+      19
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_31",
+     "check_name": "Ensure that the seccomp profile is set to docker/default or runtime/default",
+     "resource": "Deployment.production.host-ns-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/host-namespaces.yaml",
+     "file_line_range": [
+      2,
+      19
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_10",
+     "check_name": "CPU requests should be set",
+     "resource": "Deployment.production.host-ns-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/host-namespaces.yaml",
+     "file_line_range": [
+      2,
+      19
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_38",
+     "check_name": "Ensure that Service Account Tokens are only mounted where necessary",
+     "resource": "Deployment.production.host-ns-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/host-namespaces.yaml",
+     "file_line_range": [
+      2,
+      19
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_40",
+     "check_name": "Containers should run as a high UID to avoid host conflict",
+     "resource": "Deployment.production.host-ns-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/host-namespaces.yaml",
+     "file_line_range": [
+      2,
+      19
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_8",
+     "check_name": "Liveness Probe Should be Configured",
+     "resource": "Deployment.production.latest-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/latest-tag.yaml",
+     "file_line_range": [
+      2,
+      16
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_9",
+     "check_name": "Readiness Probe Should be Configured",
+     "resource": "Deployment.production.latest-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/latest-tag.yaml",
+     "file_line_range": [
+      2,
+      16
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_13",
+     "check_name": "Memory limits should be set",
+     "resource": "Deployment.production.latest-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/latest-tag.yaml",
+     "file_line_range": [
+      2,
+      16
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_12",
+     "check_name": "Memory requests should be set",
+     "resource": "Deployment.production.latest-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/latest-tag.yaml",
+     "file_line_range": [
+      2,
+      16
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_11",
+     "check_name": "CPU limits should be set",
+     "resource": "Deployment.production.latest-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/latest-tag.yaml",
+     "file_line_range": [
+      2,
+      16
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_22",
+     "check_name": "Use read-only filesystem for containers where possible",
+     "resource": "Deployment.production.latest-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/latest-tag.yaml",
+     "file_line_range": [
+      2,
+      16
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_28",
+     "check_name": "Minimize the admission of containers with the NET_RAW capability",
+     "resource": "Deployment.production.latest-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/latest-tag.yaml",
+     "file_line_range": [
+      2,
+      16
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_20",
+     "check_name": "Containers should not run with allowPrivilegeEscalation",
+     "resource": "Deployment.production.latest-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/latest-tag.yaml",
+     "file_line_range": [
+      2,
+      16
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_43",
+     "check_name": "Image should use digest",
+     "resource": "Deployment.production.latest-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/latest-tag.yaml",
+     "file_line_range": [
+      2,
+      16
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_30",
+     "check_name": "Apply security context to your containers",
+     "resource": "Deployment.production.latest-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/latest-tag.yaml",
+     "file_line_range": [
+      2,
+      16
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_37",
+     "check_name": "Minimize the admission of containers with capabilities assigned",
+     "resource": "Deployment.production.latest-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/latest-tag.yaml",
+     "file_line_range": [
+      2,
+      16
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_29",
+     "check_name": "Apply security context to your pods and containers",
+     "resource": "Deployment.production.latest-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/latest-tag.yaml",
+     "file_line_range": [
+      2,
+      16
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_23",
+     "check_name": "Minimize the admission of root containers",
+     "resource": "Deployment.production.latest-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/latest-tag.yaml",
+     "file_line_range": [
+      2,
+      16
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_31",
+     "check_name": "Ensure that the seccomp profile is set to docker/default or runtime/default",
+     "resource": "Deployment.production.latest-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/latest-tag.yaml",
+     "file_line_range": [
+      2,
+      16
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_10",
+     "check_name": "CPU requests should be set",
+     "resource": "Deployment.production.latest-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/latest-tag.yaml",
+     "file_line_range": [
+      2,
+      16
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_38",
+     "check_name": "Ensure that Service Account Tokens are only mounted where necessary",
+     "resource": "Deployment.production.latest-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/latest-tag.yaml",
+     "file_line_range": [
+      2,
+      16
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_40",
+     "check_name": "Containers should run as a high UID to avoid host conflict",
+     "resource": "Deployment.production.latest-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/latest-tag.yaml",
+     "file_line_range": [
+      2,
+      16
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_14",
+     "check_name": "Image Tag should be fixed - not latest or blank",
+     "resource": "Deployment.production.latest-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/latest-tag.yaml",
+     "file_line_range": [
+      2,
+      16
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_8",
+     "check_name": "Liveness Probe Should be Configured",
+     "resource": "Deployment.production.privileged-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/privileged.yaml",
+     "file_line_range": [
+      2,
+      18
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_9",
+     "check_name": "Readiness Probe Should be Configured",
+     "resource": "Deployment.production.privileged-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/privileged.yaml",
+     "file_line_range": [
+      2,
+      18
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_13",
+     "check_name": "Memory limits should be set",
+     "resource": "Deployment.production.privileged-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/privileged.yaml",
+     "file_line_range": [
+      2,
+      18
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_12",
+     "check_name": "Memory requests should be set",
+     "resource": "Deployment.production.privileged-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/privileged.yaml",
+     "file_line_range": [
+      2,
+      18
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_11",
+     "check_name": "CPU limits should be set",
+     "resource": "Deployment.production.privileged-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/privileged.yaml",
+     "file_line_range": [
+      2,
+      18
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_22",
+     "check_name": "Use read-only filesystem for containers where possible",
+     "resource": "Deployment.production.privileged-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/privileged.yaml",
+     "file_line_range": [
+      2,
+      18
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_28",
+     "check_name": "Minimize the admission of containers with the NET_RAW capability",
+     "resource": "Deployment.production.privileged-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/privileged.yaml",
+     "file_line_range": [
+      2,
+      18
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_20",
+     "check_name": "Containers should not run with allowPrivilegeEscalation",
+     "resource": "Deployment.production.privileged-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/privileged.yaml",
+     "file_line_range": [
+      2,
+      18
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_43",
+     "check_name": "Image should use digest",
+     "resource": "Deployment.production.privileged-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/privileged.yaml",
+     "file_line_range": [
+      2,
+      18
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_16",
+     "check_name": "Container should not be privileged",
+     "resource": "Deployment.production.privileged-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/privileged.yaml",
+     "file_line_range": [
+      2,
+      18
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_37",
+     "check_name": "Minimize the admission of containers with capabilities assigned",
+     "resource": "Deployment.production.privileged-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/privileged.yaml",
+     "file_line_range": [
+      2,
+      18
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_15",
+     "check_name": "Image Pull Policy should be Always",
+     "resource": "Deployment.production.privileged-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/privileged.yaml",
+     "file_line_range": [
+      2,
+      18
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_29",
+     "check_name": "Apply security context to your pods and containers",
+     "resource": "Deployment.production.privileged-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/privileged.yaml",
+     "file_line_range": [
+      2,
+      18
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_23",
+     "check_name": "Minimize the admission of root containers",
+     "resource": "Deployment.production.privileged-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/privileged.yaml",
+     "file_line_range": [
+      2,
+      18
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_31",
+     "check_name": "Ensure that the seccomp profile is set to docker/default or runtime/default",
+     "resource": "Deployment.production.privileged-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/privileged.yaml",
+     "file_line_range": [
+      2,
+      18
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_10",
+     "check_name": "CPU requests should be set",
+     "resource": "Deployment.production.privileged-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/privileged.yaml",
+     "file_line_range": [
+      2,
+      18
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_38",
+     "check_name": "Ensure that Service Account Tokens are only mounted where necessary",
+     "resource": "Deployment.production.privileged-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/privileged.yaml",
+     "file_line_range": [
+      2,
+      18
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_40",
+     "check_name": "Containers should run as a high UID to avoid host conflict",
+     "resource": "Deployment.production.privileged-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/privileged.yaml",
+     "file_line_range": [
+      2,
+      18
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_8",
+     "check_name": "Liveness Probe Should be Configured",
+     "resource": "Deployment.production.root-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/root-user.yaml",
+     "file_line_range": [
+      2,
+      20
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_9",
+     "check_name": "Readiness Probe Should be Configured",
+     "resource": "Deployment.production.root-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/root-user.yaml",
+     "file_line_range": [
+      2,
+      20
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_13",
+     "check_name": "Memory limits should be set",
+     "resource": "Deployment.production.root-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/root-user.yaml",
+     "file_line_range": [
+      2,
+      20
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_12",
+     "check_name": "Memory requests should be set",
+     "resource": "Deployment.production.root-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/root-user.yaml",
+     "file_line_range": [
+      2,
+      20
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_11",
+     "check_name": "CPU limits should be set",
+     "resource": "Deployment.production.root-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/root-user.yaml",
+     "file_line_range": [
+      2,
+      20
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_22",
+     "check_name": "Use read-only filesystem for containers where possible",
+     "resource": "Deployment.production.root-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/root-user.yaml",
+     "file_line_range": [
+      2,
+      20
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_28",
+     "check_name": "Minimize the admission of containers with the NET_RAW capability",
+     "resource": "Deployment.production.root-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/root-user.yaml",
+     "file_line_range": [
+      2,
+      20
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_20",
+     "check_name": "Containers should not run with allowPrivilegeEscalation",
+     "resource": "Deployment.production.root-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/root-user.yaml",
+     "file_line_range": [
+      2,
+      20
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_43",
+     "check_name": "Image should use digest",
+     "resource": "Deployment.production.root-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/root-user.yaml",
+     "file_line_range": [
+      2,
+      20
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_37",
+     "check_name": "Minimize the admission of containers with capabilities assigned",
+     "resource": "Deployment.production.root-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/root-user.yaml",
+     "file_line_range": [
+      2,
+      20
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_15",
+     "check_name": "Image Pull Policy should be Always",
+     "resource": "Deployment.production.root-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/root-user.yaml",
+     "file_line_range": [
+      2,
+      20
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_29",
+     "check_name": "Apply security context to your pods and containers",
+     "resource": "Deployment.production.root-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/root-user.yaml",
+     "file_line_range": [
+      2,
+      20
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_23",
+     "check_name": "Minimize the admission of root containers",
+     "resource": "Deployment.production.root-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/root-user.yaml",
+     "file_line_range": [
+      2,
+      20
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_31",
+     "check_name": "Ensure that the seccomp profile is set to docker/default or runtime/default",
+     "resource": "Deployment.production.root-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/root-user.yaml",
+     "file_line_range": [
+      2,
+      20
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_10",
+     "check_name": "CPU requests should be set",
+     "resource": "Deployment.production.root-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/root-user.yaml",
+     "file_line_range": [
+      2,
+      20
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_38",
+     "check_name": "Ensure that Service Account Tokens are only mounted where necessary",
+     "resource": "Deployment.production.root-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/root-user.yaml",
+     "file_line_range": [
+      2,
+      20
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_40",
+     "check_name": "Containers should run as a high UID to avoid host conflict",
+     "resource": "Deployment.production.root-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/root-user.yaml",
+     "file_line_range": [
+      2,
+      20
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_8",
+     "check_name": "Liveness Probe Should be Configured",
+     "resource": "Deployment.production.secret-env-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/secret-env.yaml",
+     "file_line_range": [
+      2,
+      21
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_9",
+     "check_name": "Readiness Probe Should be Configured",
+     "resource": "Deployment.production.secret-env-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/secret-env.yaml",
+     "file_line_range": [
+      2,
+      21
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_13",
+     "check_name": "Memory limits should be set",
+     "resource": "Deployment.production.secret-env-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/secret-env.yaml",
+     "file_line_range": [
+      2,
+      21
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_12",
+     "check_name": "Memory requests should be set",
+     "resource": "Deployment.production.secret-env-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/secret-env.yaml",
+     "file_line_range": [
+      2,
+      21
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_11",
+     "check_name": "CPU limits should be set",
+     "resource": "Deployment.production.secret-env-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/secret-env.yaml",
+     "file_line_range": [
+      2,
+      21
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_22",
+     "check_name": "Use read-only filesystem for containers where possible",
+     "resource": "Deployment.production.secret-env-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/secret-env.yaml",
+     "file_line_range": [
+      2,
+      21
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_28",
+     "check_name": "Minimize the admission of containers with the NET_RAW capability",
+     "resource": "Deployment.production.secret-env-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/secret-env.yaml",
+     "file_line_range": [
+      2,
+      21
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_20",
+     "check_name": "Containers should not run with allowPrivilegeEscalation",
+     "resource": "Deployment.production.secret-env-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/secret-env.yaml",
+     "file_line_range": [
+      2,
+      21
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_43",
+     "check_name": "Image should use digest",
+     "resource": "Deployment.production.secret-env-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/secret-env.yaml",
+     "file_line_range": [
+      2,
+      21
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_30",
+     "check_name": "Apply security context to your containers",
+     "resource": "Deployment.production.secret-env-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/secret-env.yaml",
+     "file_line_range": [
+      2,
+      21
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_37",
+     "check_name": "Minimize the admission of containers with capabilities assigned",
+     "resource": "Deployment.production.secret-env-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/secret-env.yaml",
+     "file_line_range": [
+      2,
+      21
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_15",
+     "check_name": "Image Pull Policy should be Always",
+     "resource": "Deployment.production.secret-env-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/secret-env.yaml",
+     "file_line_range": [
+      2,
+      21
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_29",
+     "check_name": "Apply security context to your pods and containers",
+     "resource": "Deployment.production.secret-env-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/secret-env.yaml",
+     "file_line_range": [
+      2,
+      21
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_23",
+     "check_name": "Minimize the admission of root containers",
+     "resource": "Deployment.production.secret-env-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/secret-env.yaml",
+     "file_line_range": [
+      2,
+      21
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_31",
+     "check_name": "Ensure that the seccomp profile is set to docker/default or runtime/default",
+     "resource": "Deployment.production.secret-env-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/secret-env.yaml",
+     "file_line_range": [
+      2,
+      21
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_10",
+     "check_name": "CPU requests should be set",
+     "resource": "Deployment.production.secret-env-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/secret-env.yaml",
+     "file_line_range": [
+      2,
+      21
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_38",
+     "check_name": "Ensure that Service Account Tokens are only mounted where necessary",
+     "resource": "Deployment.production.secret-env-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/secret-env.yaml",
+     "file_line_range": [
+      2,
+      21
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_40",
+     "check_name": "Containers should run as a high UID to avoid host conflict",
+     "resource": "Deployment.production.secret-env-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/secret-env.yaml",
+     "file_line_range": [
+      2,
+      21
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_49",
+     "check_name": "Minimize wildcard use in Roles and ClusterRoles",
+     "resource": "ClusterRole.default.too-powerful",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/wildcard-rbac.yaml",
+     "file_line_range": [
+      2,
+      10
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_156",
+     "check_name": "Minimize ClusterRoles that grant permissions to approve CertificateSigningRequests",
+     "resource": "ClusterRole.default.too-powerful",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/wildcard-rbac.yaml",
+     "file_line_range": [
+      2,
+      10
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_157",
+     "check_name": "Minimize Roles and ClusterRoles that grant permissions to bind RoleBindings or ClusterRoleBindings",
+     "resource": "ClusterRole.default.too-powerful",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/wildcard-rbac.yaml",
+     "file_line_range": [
+      2,
+      10
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_158",
+     "check_name": "Minimize Roles and ClusterRoles that grant permissions to escalate Roles or ClusterRoles",
+     "resource": "ClusterRole.default.too-powerful",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/wildcard-rbac.yaml",
+     "file_line_range": [
+      2,
+      10
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_155",
+     "check_name": "Minimize ClusterRoles that grant control over validating or mutating admission webhook configurations",
+     "resource": "ClusterRole.default.too-powerful",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/wildcard-rbac.yaml",
+     "file_line_range": [
+      2,
+      10
+     ]
+    },
+    {
+     "check_id": "CKV_K8S_42",
+     "check_name": "Ensure that default service accounts are not actively used",
+     "resource": "ClusterRoleBinding.default.too-powerful-binding",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/wildcard-rbac.yaml",
+     "file_line_range": [
+      11,
+      22
+     ]
+    },
+    {
+     "check_id": "CKV2_K8S_6",
+     "check_name": "Minimize the admission of pods which lack an associated NetworkPolicy",
+     "resource": "Pod.production.host-ns-app.app-host-ns-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/host-namespaces.yaml",
+     "file_line_range": [
+      2,
+      19
+     ]
+    },
+    {
+     "check_id": "CKV2_K8S_6",
+     "check_name": "Minimize the admission of pods which lack an associated NetworkPolicy",
+     "resource": "Pod.production.latest-app.app-latest-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/latest-tag.yaml",
+     "file_line_range": [
+      2,
+      16
+     ]
+    },
+    {
+     "check_id": "CKV2_K8S_6",
+     "check_name": "Minimize the admission of pods which lack an associated NetworkPolicy",
+     "resource": "Pod.production.privileged-app.app-privileged-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/privileged.yaml",
+     "file_line_range": [
+      2,
+      18
+     ]
+    },
+    {
+     "check_id": "CKV2_K8S_6",
+     "check_name": "Minimize the admission of pods which lack an associated NetworkPolicy",
+     "resource": "Pod.production.root-app.app-root-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/root-user.yaml",
+     "file_line_range": [
+      2,
+      20
+     ]
+    },
+    {
+     "check_id": "CKV2_K8S_6",
+     "check_name": "Minimize the admission of pods which lack an associated NetworkPolicy",
+     "resource": "Pod.production.secret-env-app.app-secret-env-app",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/secret-env.yaml",
+     "file_line_range": [
+      2,
+      21
+     ]
+    },
+    {
+     "check_id": "CKV2_K8S_5",
+     "check_name": "No ServiceAccount/Node should be able to read all secrets",
+     "resource": "ClusterRoleBinding.default.too-powerful-binding",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/wildcard-rbac.yaml",
+     "file_line_range": [
+      11,
+      22
+     ]
+    },
+    {
+     "check_id": "CKV2_K8S_1",
+     "check_name": "RoleBinding should not allow privilege escalation to a ServiceAccount or Node on other RoleBinding",
+     "resource": "ClusterRoleBinding.default.too-powerful-binding",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/wildcard-rbac.yaml",
+     "file_line_range": [
+      11,
+      22
+     ]
+    },
+    {
+     "check_id": "CKV2_K8S_3",
+     "check_name": "No ServiceAccount/Node should have `impersonate` permissions for groups/users/service-accounts",
+     "resource": "ClusterRoleBinding.default.too-powerful-binding",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/wildcard-rbac.yaml",
+     "file_line_range": [
+      11,
+      22
+     ]
+    },
+    {
+     "check_id": "CKV2_K8S_4",
+     "check_name": "ServiceAccounts and nodes that can modify services/status may set the `status.loadBalancer.ingress.ip` field to exploit the unfixed CVE-2020-8554 and launch MiTM attacks against the cluster.",
+     "resource": "ClusterRoleBinding.default.too-powerful-binding",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/wildcard-rbac.yaml",
+     "file_line_range": [
+      11,
+      22
+     ]
+    },
+    {
+     "check_id": "CKV2_K8S_2",
+     "check_name": "Granting `create` permissions to `nodes/proxy` or `pods/exec` sub resources allows potential privilege escalation",
+     "resource": "ClusterRoleBinding.default.too-powerful-binding",
+     "guideline": null,
+     "severity": null,
+     "file_path": "/lab/broken/wildcard-rbac.yaml",
+     "file_line_range": [
+      11,
+      22
+     ]
+    }
+   ]
+  }
+ }
+]

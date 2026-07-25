@@ -20,7 +20,7 @@ func TestLab_CheckovBroken(t *testing.T) {
 	if err != nil {
 		t.Fatalf("registry: %v", err)
 	}
-	data, err := os.ReadFile("../../lab/raw/checkov.json")
+	data, err := os.ReadFile("../../testdata/lab/checkov.json")
 	if err != nil {
 		t.Skipf("lab checkov.json алга: %v", err)
 	}
