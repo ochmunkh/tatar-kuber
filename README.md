@@ -1,138 +1,152 @@
 # TATAR-Kuber
 
-**Kubernetes security posture assessment framework.**
-Нэг команд, олон scanner, нэг стандарт тайлан.
+**Kubernetes security posture assessment framework — one command, four scanners, one standard report.**
 
-> Агент суулгалгүйгээр (Mode B) эсвэл локал manifest дээр (Mode A) Kubernetes
-> орчны аюулгүй байдлыг шалгаж, **Trivy · Kubescape · Checkov · Popeye**-ийн
-> үр дүнг нэг canonical стандарт руу нэгтгэн, инженер / auditor / CISO ойлгох
-> нэг тайлан гаргана.
+TATAR-Kuber runs **Trivy · Kubescape · Checkov · Popeye**, unifies their output into one
+**canonical control model**, de-duplicates it (so "3 scanners found 1 issue" instead of
+"3 findings"), scores risk, and produces a single report — **JSON / SARIF / HTML**, in
+**English or Mongolian** — that engineers, auditors and CISOs can all read.
 
 **Author:** Enkhbat.O — Security analyst
 
 ```bash
-tatar-kuber scan --kubeconfig ~/.kube/config
-tatar-kuber report -o html --open
+tatar-kuber scan   --kubeconfig ~/.kube/config -o out      # or: --raw-dir ./raw  (offline)
+tatar-kuber report --input out/scan-result.json -o html --out report.html
+# Mongolian report:  tatar-kuber scan ... --lang mn
 ```
 
 ## Report — one issue, every scanner, both languages
 
-The same finding rendered in **English** and **Mongolian** (`--lang en|mn`). Note
-`found_by = checkov · kubescape · trivy` on the privileged container → the unified,
+The same scan rendered in **English** and **Mongolian** (`--lang en|mn`). Note
+`found_by = checkov · kubescape · trivy` on the privileged container: the unified,
 de-duplicated view with confidence, evidence and remediation.
 
 | English | Монгол |
 |---|---|
 | ![TATAR-Kuber report (English)](docs/img/report-en.jpg) | ![TATAR-Kuber тайлан (Монгол)](docs/img/report-mn.jpg) |
 
-## Design Principles
+## Design principles
 
-- **Read-Only First** — customer орчинг хэзээ ч өөрчлөхгүй (get/list/watch).
-- **Scanner Agnostic** — TATAR-Kuber өөрөө scanner биш; Orchestrator +
-  Normalizer + Risk Engine + Reporting Engine.
+- **Read-Only First** — never modifies the customer environment (`get` / `list` / `watch` only).
+- **Scanner Agnostic** — TATAR-Kuber is not a scanner; it is an Orchestrator + Normalizer +
+  Risk Engine + Reporting Engine. Scanners are pluggable adapters.
 
-## Scanner Stack (v1.0)
+## Scanner stack
 
-| Scanner | Зорилго |
+| Scanner | Purpose |
 |---|---|
-| Trivy | Image CVE, secret, misconfiguration |
+| Trivy | Image CVEs, secrets, misconfiguration |
 | Kubescape | NSA / MITRE / RBAC / compliance (primary posture engine) |
 | Checkov | IaC (YAML / Helm / Terraform) |
-| Popeye | Runtime hygiene (dead service, unused, broken ref) |
+| Popeye | Runtime hygiene (dead service, unused, broken reference) |
 
-> `kube-bench` (node/CIS) нь privileged DaemonSet шаарддаг тул MVP-д
-> багтаагүй — Enterprise Agent (Mode C, v2).
+> `kube-bench` (node/CIS) needs a privileged DaemonSet and is out of MVP scope (Enterprise Agent).
 
-## Features (v1.0)
+## Features
 
-- Local (Mode A) + Remote (Mode B) scan
-- **Canonical Control Mapping** — scanner rule ID-г нэг хэл рүү
-- **Deduplication** — давхардлыг арилгах (canonical + resource + namespace)
-- **Severity normalization** + **Risk Scoring v1.2** (Level 1 finding + Level 2 cluster 0–100)
-- **Blind Shot** — контекстээр downgrade (устгахгүй, ил үлдэнэ)
-- Output: **JSON** · **SARIF** (GitHub/GitLab/Azure) · **HTML dashboard**
+- Local (Mode A) + Remote (Mode B) scanning, plus **offline ingest** of pre-collected raw output
+- **Canonical Control Mapping** — every scanner's rule IDs unified into stable `TATAR-*` controls
+- **Deduplication** — merges the same issue across scanners; keeps `found_by` + evidence
+- **Confidence engine** — multi-scanner agreement and check determinism (a Trivy-only CVE is still HIGH)
+- **Blind-shot engine** — context-aware severity down-grade (never suppresses; stays visible)
+- **Risk scoring v1.2** — per-finding + cluster score (0–100, diminishing model)
+- **Reports** — JSON · SARIF 2.1.0 (GitHub/GitLab/Azure) · HTML dashboard (bilingual)
+- **verify-lab** — regression check against an expected-findings baseline
 
-## Гол хөрөнгө (product asset)
+## Quick start (offline, no cluster, no scanner install)
 
-`schema/canonical-controls.yaml` — TATAR Canonical Control Registry.
-Scanner солигдоно; canonical registry + risk model + normalization engine
-бол бүтээгдэхүүний оюун ухаан.
+The companion [**tatar-kuber-lab**](https://github.com/ochmunkh/tatar-kuber-lab) repo ships
+real scanner output so you can try the full pipeline in ~30 seconds:
 
-## Project Layout
+```bash
+git clone https://github.com/ochmunkh/tatar-kuber-lab
+tatar-kuber scan --raw-dir tatar-kuber-lab/raw \
+    --registry schema/canonical-controls.yaml -o out
+tatar-kuber report    --input out/scan-result.json -o html --out report.html
+tatar-kuber verify-lab --input out/scan-result.json \
+    --expected tatar-kuber-lab/expected/expected-findings.json
+```
+
+## How it works
 
 ```
-cmd/tatar-kuber/       CLI entrypoint
-internal/
-  cli/                 команд dispatch
-  scanner/             ScannerAdapter + trivy|kubescape|checkov|popeye
-  canonical/           canonical-controls.yaml loader + resolve
-  finding/             Unified Finding Schema
-  risk/                Risk Scoring Model v1.2 (+ test)
-  report/              json | sarif | html
-  kube/                read-only client-go wrapper (Mode B)
-schema/                canonical-controls.yaml, tatar-schema-v1.json
-deploy/                least-privilege-clusterrole.yaml
-docs/                  01–06 engineering documents
+raw scanner output → normalize → canonical mapping → dedup → blind-shot → risk score → report
 ```
 
 ## Build
 
 ```bash
 go build ./...
-go test ./...
-./scripts/build.sh 1.0.0     # cross-platform dist/
+go test ./...          # 12 packages, all green
+./scripts/build.sh 1.0.0
 ```
 
-## Mode B RBAC
+## CLI
 
-Remote scan-д зориулсан least-privilege ClusterRole:
-`deploy/least-privilege-clusterrole.yaml` (зөвхөн get/list/watch).
+```
+tatar-kuber scan        --kubeconfig | --context | -f | --raw-dir  [--lang en|mn]
+tatar-kuber report      -o json | sarif | html  [--fail-on HIGH]
+tatar-kuber verify-lab  --input scan-result.json --expected expected-findings.json
+tatar-kuber version
+```
+
+## Documentation
+
+Six engineering documents in `docs/` (01 Unified Schema, 02 Canonical Mapping, 03 Scanner
+Adapter Interface, 04 Severity & Risk Scoring, 05 CLI Spec, 06 Repository Structure).
 
 ## Status
 
-`v1.0` — architecture LOCKED, skeleton scaffolding. Adapter/engine
-хэрэгжүүлэлт хийгдэж байна.
+`v1.0.0-rc1` — all tests green. Next: concurrency (parallel adapters), CLI test coverage,
+live-cluster runs.
 
 ## License
 
 Open Core. Community CLI — Apache-2.0.
 
-## Quick demo (offline ingest)
+---
 
-Scanner binary шаардлагагүй — цуглуулсан raw JSON-оос:
+## Монгол хэл дээр
 
-```bash
-go run ./cmd/tatar-kuber scan --raw-dir examples/raw --cluster production \
-    --registry schema/canonical-controls.yaml -o examples/out
-go run ./cmd/tatar-kuber report --input examples/out/scan-result.json -o html --out report.html
-go run ./cmd/tatar-kuber report --input examples/out/scan-result.json -o sarif --out out.sarif
-```
+**Kubernetes аюулгүй байдлын үнэлгээний framework — нэг команд, дөрвөн scanner, нэг стандарт тайлан.**
 
-`examples/raw/` дотор 4 scanner-ийн жишээ гаралт бий. Pipeline тэдгээрийг
-canonical control руу normalize хийж, дедуп хийж (ж: privileged container-ыг
-Trivy+Kubescape+Checkov гурвуулаа олоод нэг finding, `confidence=HIGH`),
-risk оноо тооцож, JSON/SARIF/HTML тайлан гаргана.
+TATAR-Kuber нь **Trivy · Kubescape · Checkov · Popeye**-ийг ажиллуулж, тэдгээрийн гаралтыг
+нэг **canonical control загвар** руу нэгтгэж, давхардлыг арилгаж ("3 scanner нэг асуудал
+олсон" — 3 finding биш), эрсдэлийг үнэлж, нэг тайлан гаргана — **JSON / SARIF / HTML**,
+**англи эсвэл монгол** хэлээр. Инженер / auditor / CISO бүгд ойлгоно.
 
-## Status (v0.2.0-mvp)
+**Зохиогч:** Enkhbat.O — Security analyst
 
-Бүрэн ажиллагаатай engine + тайлан, бүх модуль тесттэй:
+### Гол зарчим
 
-- ✅ Canonical registry (33 control) + validation
-- ✅ 4 scanner adapter: Trivy, Kubescape, Checkov, Popeye (Normalize + fixtures)
-- ✅ Dedup engine (cross-scanner merge, found_by, confidence)
-- ✅ Blind-shot engine (downgrade + annotate)
-- ✅ Risk scoring v1.2 (Level 1 finding + Level 2 cluster 0–100)
-- ✅ Orchestrator pipeline + detrministik result_hash
-- ✅ Reports: JSON · SARIF 2.1.0 · HTML dashboard
-- ✅ CLI: scan (offline ingest ажиллана) · report · version
-- ⏳ Live scan (scanner binary дуудлага), update (cosign verify), remote client-go — дараагийн үе
+- **Read-Only First** — customer орчинг хэзээ ч өөрчлөхгүй (зөвхөн `get` / `list` / `watch`).
+- **Scanner Agnostic** — өөрөө scanner биш; Orchestrator + Normalizer + Risk Engine + Reporting.
 
-## Test lab
+### Онцлог
 
-Vulnerable/hardened manifests + regression harness live in a separate repo:
-**[tatar-kuber-lab](https://github.com/ochmunkh/tatar-kuber-lab)**.
+- Local (Mode A) + Remote (Mode B) + **offline ingest** (урьдчилан цуглуулсан raw)
+- **Canonical Control Mapping** — scanner бүрийн rule ID-г нэг `TATAR-*` control руу
+- **Deduplication** — олон scanner-ийн ижил асуудлыг нэгтгэж `found_by`-г хадгална
+- **Confidence engine** — олон scanner-ийн санал нийлэлт + determinism (Trivy ганц CVE ч HIGH)
+- **Blind-shot engine** — контекстээр severity бууруулна (устгахгүй, ил үлдэнэ)
+- **Risk scoring v1.2** — finding бүр + cluster оноо (0–100)
+- **Reports** — JSON · SARIF 2.1.0 · HTML dashboard (хоёр хэлт)
+- **verify-lab** — expected baseline-тай тулгаж regression шалгах
+
+### Түргэн эхлэл (offline, cluster/суулгац хэрэггүй)
 
 ```bash
-tatar-kuber scan --raw-dir <lab>/raw -o out
-tatar-kuber verify-lab --input out/scan-result.json --expected <lab>/expected-findings.json
+git clone https://github.com/ochmunkh/tatar-kuber-lab
+tatar-kuber scan --raw-dir tatar-kuber-lab/raw \
+    --registry schema/canonical-controls.yaml --lang mn -o out
+tatar-kuber report --input out/scan-result.json -o html --out report.html
 ```
+
+### Туршилтын лаборатори
+
+Эмзэг/аюулгүй manifest + regression baseline тусдаа repo-д:
+[**tatar-kuber-lab**](https://github.com/ochmunkh/tatar-kuber-lab).
+
+### Төлөв
+
+`v1.0.0-rc1` — бүх тест ногоон. Дараа нь: concurrency, CLI тест, бодит cluster.
