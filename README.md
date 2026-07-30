@@ -165,6 +165,17 @@ TATAR-Kuber нь **Trivy · Kubescape · Checkov · Popeye**-ийг ажиллу
 - **Read-Only First** — customer орчинг хэзээ ч өөрчлөхгүй (зөвхөн `get` / `list` / `watch`).
 - **Scanner Agnostic** — өөрөө scanner биш; Orchestrator + Normalizer + Risk Engine + Reporting.
 
+### Scanner-ууд
+
+| Scanner | Зорилго |
+|---|---|
+| Trivy | Image CVE, secret, misconfiguration |
+| Kubescape | NSA / MITRE / RBAC / compliance (үндсэн posture engine) |
+| Checkov | IaC (YAML / Helm / Terraform) |
+| Popeye | Runtime hygiene (dead service, unused, broken reference) |
+
+> `kube-bench` (node/CIS) нь privileged DaemonSet шаарддаг тул MVP-д багтаагүй (Enterprise Agent).
+
 ### Онцлог
 
 - Local (Mode A) + Remote (Mode B) + **offline ingest** (урьдчилан цуглуулсан raw)
@@ -214,6 +225,34 @@ tatar-kuber scan --raw-dir tatar-kuber-lab/raw \
     --registry schema/canonical-controls.yaml --lang mn -o out
 tatar-kuber report --input out/scan-result.json -o html --out report.html
 ```
+
+### Хэрхэн ажилладаг вэ
+
+```
+raw scanner гаралт → normalize → canonical mapping → dedup → blind-shot → risk score → тайлан
+```
+
+### CLI командууд
+
+```
+tatar-kuber scan        --kubeconfig | --context | -f | --raw-dir  [--lang en|mn]
+tatar-kuber report      -o json | sarif | html  [--fail-on HIGH]
+tatar-kuber verify-lab  --input scan-result.json --expected expected-findings.json
+tatar-kuber version
+```
+
+### Build
+
+```bash
+go build ./...
+go test ./...          # 12 багц, бүгд ногоон
+./scripts/build.sh 1.0.0
+```
+
+### Баримт бичиг
+
+`docs/` дотор 6 инженерийн баримт (01 Unified Schema, 02 Canonical Mapping, 03 Scanner
+Adapter Interface, 04 Severity & Risk Scoring, 05 CLI Spec, 06 Repository Structure).
 
 ### Туршилтын лаборатори
 
