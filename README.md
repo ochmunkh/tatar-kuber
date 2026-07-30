@@ -7,7 +7,7 @@ TATAR-Kuber runs **Trivy · Kubescape · Checkov · Popeye**, unifies their outp
 "3 findings"), scores risk, and produces a single report — **JSON / SARIF / HTML**, in
 **English or Mongolian** — that engineers, auditors and CISOs can all read.
 
-**Author:** Enkhbat.O — Security analyst
+**Author:** Enkhbat.O — Security Analyst
 
 ```bash
 tatar-kuber scan   --kubeconfig ~/.kube/config -o out      # or: --raw-dir ./raw  (offline)
@@ -115,7 +115,7 @@ TATAR-Kuber нь **Trivy · Kubescape · Checkov · Popeye**-ийг ажиллу
 олсон" — 3 finding биш), эрсдэлийг үнэлж, нэг тайлан гаргана — **JSON / SARIF / HTML**,
 **англи эсвэл монгол** хэлээр. Инженер / auditor / CISO бүгд ойлгоно.
 
-**Зохиогч:** Enkhbat.O — Security analyst
+**Зохиогч:** Enkhbat.O — Security Analyst
 
 ### Гол зарчим
 
