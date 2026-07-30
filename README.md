@@ -65,6 +65,37 @@ de-duplicated view with confidence, evidence and remediation.
 - **Reports** — JSON · SARIF 2.1.0 (GitHub/GitLab/Azure) · HTML dashboard (bilingual)
 - **verify-lab** — regression check against an expected-findings baseline
 
+## Scope & positioning
+
+TATAR-Kuber focuses on **security posture, configuration, IaC, image and RBAC analysis
+with unified reporting**. It is **complementary to — not a replacement for** — runtime
+detection, admission control and secrets management. Run it *alongside* Falco/Tetragon,
+Kyverno/OPA and Vault for full coverage.
+
+**In scope**
+
+| Domain | | Notes |
+|---|:--:|---|
+| Cluster configuration & posture | ✅ | via Kubescape / Trivy (live Mode B in progress) |
+| Kubernetes misconfiguration | ✅ | Trivy · Kubescape · Checkov |
+| RBAC security | ✅ | excessive permissions, wildcard, cluster-admin |
+| Pod / Workload security | ✅ | privileged, hostPath, capabilities, runAsRoot… |
+| Image vulnerabilities | ✅ | CVEs via Trivy |
+| IaC security | ✅ | YAML / Helm (Terraform partial, via Checkov) |
+| Compliance mapping | ✅ | NSA / CIS / MITRE refs via canonical controls (partial) |
+| Reporting & risk scoring | ✅ | dedup, risk score, JSON / SARIF / HTML |
+| Runtime hygiene | ⚠️ | Popeye (dead / unused / broken refs) — not threat detection |
+
+**Out of scope (by design) — use alongside**
+
+| Not covered | Use instead |
+|---|---|
+| Runtime threat detection | Falco · Tetragon |
+| Network traffic monitoring (eBPF) | Cilium/Hubble · Falco |
+| Container behavioral detection | Falco · Tetragon |
+| Admission control (block deploys) | Kyverno · OPA Gatekeeper |
+| Secrets management | HashiCorp Vault · External Secrets |
+
 ## Quick start (offline, no cluster, no scanner install)
 
 The companion [**tatar-kuber-lab**](https://github.com/ochmunkh/tatar-kuber-lab) repo ships
@@ -144,6 +175,19 @@ TATAR-Kuber нь **Trivy · Kubescape · Checkov · Popeye**-ийг ажиллу
 - **Risk scoring v1.2** — finding бүр + cluster оноо (0–100)
 - **Reports** — JSON · SARIF 2.1.0 · HTML dashboard (хоёр хэлт)
 - **verify-lab** — expected baseline-тай тулгаж regression шалгах
+
+### Хамрах хүрээ (Scope)
+
+TATAR-Kuber нь **posture / configuration / IaC / image / RBAC + нэгдсэн тайлан**-д
+төвлөрдөг. Runtime threat detection (Falco/Tetragon), admission control (Kyverno/OPA),
+secrets management (Vault)-ыг **орлохгүй — тэдгээртэй хамт ажилладаг (complementary).**
+
+**Хийдэг:** cluster posture ✅ · misconfiguration ✅ · RBAC ✅ · workload/pod ✅ ·
+image CVE ✅ · IaC (YAML/Helm) ✅ · compliance mapping ✅ · risk + reporting ✅ ·
+runtime hygiene ⚠️ (Popeye — threat detection биш).
+
+**Хийхгүй (зориудаар) — хамт ашигла:** runtime threat detection → Falco/Tetragon ·
+network monitoring → Cilium/Hubble · admission control → Kyverno/OPA · secrets → Vault.
 
 ### Түргэн эхлэл (offline, cluster/суулгац хэрэггүй)
 
