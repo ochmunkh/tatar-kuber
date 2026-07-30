@@ -1,5 +1,13 @@
 # TATAR-Kuber
 
+![License](https://img.shields.io/badge/license-Apache--2.0-blue)
+![Go](https://img.shields.io/badge/Go-1.22%2B-00ADD8?logo=go&logoColor=white)
+![Kubernetes](https://img.shields.io/badge/Kubernetes-security-326CE5?logo=kubernetes&logoColor=white)
+![Scanners](https://img.shields.io/badge/scanners-Trivy%20%C2%B7%20Kubescape%20%C2%B7%20Checkov%20%C2%B7%20Popeye-2A4D69)
+![Output](https://img.shields.io/badge/output-JSON%20%C2%B7%20SARIF%20%C2%B7%20HTML-1F6F54)
+![Tests](https://img.shields.io/badge/tests-12%20packages%20green-brightgreen)
+![Release](https://img.shields.io/badge/release-v1.0.0--rc1-orange)
+
 **Kubernetes security posture assessment framework — one command, four scanners, one standard report.**
 
 TATAR-Kuber runs **Trivy · Kubescape · Checkov · Popeye**, unifies their output into one
@@ -21,9 +29,13 @@ The same scan rendered in **English** and **Mongolian** (`--lang en|mn`). Note
 `found_by = checkov · kubescape · trivy` on the privileged container: the unified,
 de-duplicated view with confidence, evidence and remediation.
 
-| English | Монгол |
-|---|---|
-| ![TATAR-Kuber report (English)](docs/img/report-en.jpg) | ![TATAR-Kuber тайлан (Монгол)](docs/img/report-mn.jpg) |
+**🇬🇧 English report**
+
+![TATAR-Kuber report — English](docs/img/report-en.jpg)
+
+**🇲🇳 Монгол тайлан**
+
+![TATAR-Kuber тайлан — Монгол](docs/img/report-mn.jpg)
 
 ## Design principles
 
