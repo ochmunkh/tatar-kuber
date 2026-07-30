@@ -182,12 +182,29 @@ TATAR-Kuber нь **posture / configuration / IaC / image / RBAC + нэгдсэн
 төвлөрдөг. Runtime threat detection (Falco/Tetragon), admission control (Kyverno/OPA),
 secrets management (Vault)-ыг **орлохгүй — тэдгээртэй хамт ажилладаг (complementary).**
 
-**Хийдэг:** cluster posture ✅ · misconfiguration ✅ · RBAC ✅ · workload/pod ✅ ·
-image CVE ✅ · IaC (YAML/Helm) ✅ · compliance mapping ✅ · risk + reporting ✅ ·
-runtime hygiene ⚠️ (Popeye — threat detection биш).
+**Хийдэг**
 
-**Хийхгүй (зориудаар) — хамт ашигла:** runtime threat detection → Falco/Tetragon ·
-network monitoring → Cilium/Hubble · admission control → Kyverno/OPA · secrets → Vault.
+| Домэйн | | Тайлбар |
+|---|:--:|---|
+| Cluster configuration & posture | ✅ | Kubescape / Trivy (live Mode B хийгдэж байна) |
+| Kubernetes misconfiguration | ✅ | Trivy · Kubescape · Checkov |
+| RBAC аюулгүй байдал | ✅ | хэт их эрх, wildcard, cluster-admin |
+| Pod / Workload аюулгүй байдал | ✅ | privileged, hostPath, capabilities, runAsRoot… |
+| Image эмзэг байдал | ✅ | Trivy CVE |
+| IaC аюулгүй байдал | ✅ | YAML / Helm (Terraform хэсэгчлэн, Checkov) |
+| Compliance mapping | ✅ | NSA / CIS / MITRE (canonical, хэсэгчлэн) |
+| Тайлан & risk scoring | ✅ | dedup, оноо, JSON / SARIF / HTML |
+| Runtime hygiene | ⚠️ | Popeye — threat detection БИШ |
+
+**Хийхгүй (зориудаар) — хамт ашигла**
+
+| Хамрахгүй | Оронд нь |
+|---|---|
+| Runtime threat detection | Falco · Tetragon |
+| Network traffic monitoring (eBPF) | Cilium/Hubble · Falco |
+| Container behavioral detection | Falco · Tetragon |
+| Admission control (deploy блоклох) | Kyverno · OPA Gatekeeper |
+| Secrets management | HashiCorp Vault · External Secrets |
 
 ### Түргэн эхлэл (offline, cluster/суулгац хэрэггүй)
 
