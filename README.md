@@ -143,6 +143,12 @@ Adapter Interface, 04 Severity & Risk Scoring, 05 CLI Spec, 06 Repository Struct
 `v1.0.0-rc1` — all tests green. Next: concurrency (parallel adapters), CLI test coverage,
 live-cluster runs.
 
+## Contributing
+
+Contributions are welcome! 🎉 The cleanest first PR is a **new scanner adapter** — see
+[CONTRIBUTING.md](CONTRIBUTING.md) and [`docs/03-Scanner-Adapter-Interface.md`](docs).
+Please keep `go test ./...` green and read the [Code of Conduct](CODE_OF_CONDUCT.md).
+
 ## License
 
 Open Core. Community CLI — Apache-2.0.

@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Test lab (try it in ~30s)
+    url: https://github.com/ochmunkh/Tatar-Kuber-Lab
+    about: Vulnerable/hardened manifests and the verify-lab regression baseline.
+  - name: Contributing guide
+    url: https://github.com/ochmunkh/Tatar-Kuber/blob/master/CONTRIBUTING.md
+    about: How to add a scanner adapter, canonical controls, and open a PR.
